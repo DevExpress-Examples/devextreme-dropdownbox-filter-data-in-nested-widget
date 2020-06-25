@@ -1,0 +1,41 @@
+<div class="dx-viewport demo-container">
+  <div class="dx-fieldset">
+    <div class="dx-field">
+      <div class="dx-field-label">DropDownBox with search and embedded DataGrid</div>
+      <div class="dx-field-value">
+        <dx-drop-down-box #dropDownBox [dataSource]="dropDownBoxDataSource" [(value)]="gridBoxValue"
+          (onValueChanged)="dropDownBoxValueChanged($event)" valueExpr="OrderNumber" [openOnFieldClick]="false"
+          [displayExpr]="gridBox_displayExpr" [showClearButton]="true" placeholder="Select a value..."
+          [showClearButton]="true" [acceptCustomValue]="true" [(opened)]="gridBoxOpened" valueChangeEvent=""
+          (onKeyDown)="onKeyDown($event)" (onInput)="onInput($event)" (onOpened)="onOpened($event)"
+          (onClosed)="onClosed($event)">
+          <dxo-drop-down-options [height]="300">
+
+          </dxo-drop-down-options>
+          <div *dxTemplate="let data of 'content'">
+            <dx-data-grid height="100%" width="100%" (onInitialized)="dataGridOnInitialized($event)" [columnWidth]="100"             
+              [(selectedRowKeys)]="gridBoxValue" [focusedRowIndex]="focusedRowIndex"
+              [dataSource]="dataSource" [remoteOperations]="true" [focusedRowEnabled]="true" [hoverStateEnabled]="true"
+              [(focusedRowKey)]="focusedRowKey" [autoNavigateToFocusedRow]="false"
+              (onKeyDown)="dataGridOnKeyDown($event)"
+              (onContentReady)="dataGridOnContentReady($event)">
+
+              <dxi-column dataField="OrderNumber" caption="ID" dataType="number"></dxi-column>
+              <dxi-column dataField="OrderDate" dataType="date" fomrat="shortDate"></dxi-column>
+              <dxi-column dataField="StoreState" dataType="string"></dxi-column>
+              <dxi-column dataField="StoreCity" dataType="string"></dxi-column>
+              <dxi-column dataField="Employee" dataType="string"></dxi-column>
+              <dxi-column dataField="SaleAmount" dataType="number">
+                <dxo-format type="currency" [precision]="2"></dxo-format>
+              </dxi-column>
+              <dxo-pager [visible]="false"></dxo-pager>
+              <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+              <dxo-selection mode="single"></dxo-selection>
+              <dxo-scrolling mode="virtual"></dxo-scrolling>
+            </dx-data-grid>
+          </div>
+        </dx-drop-down-box>
+      </div>
+    </div>
+  </div>
+</div>
