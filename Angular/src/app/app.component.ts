@@ -90,7 +90,6 @@ export class AppComponent implements AfterViewInit {
         this.dataGrid.on("contentReady", contentReadyHandler);
       else {
         var optionChangedHandler = (args) => {
-          console.log('option_changed', args.name);
           let gridInstance = args.component;
           if (args.name === 'focusedRowKey') {
             gridInstance.off('optionChanged', optionChangedHandler);
