@@ -3,20 +3,38 @@
     <div class="dx-field">
       <div class="dx-field-label">DropDownBox with search and embedded DataGrid</div>
       <div class="dx-field-value">
-        <dx-drop-down-box #dropDownBox [dataSource]="dropDownBoxDataSource" [(value)]="gridBoxValue"
-          (onValueChanged)="dropDownBoxValueChanged($event)" valueExpr="OrderNumber" [openOnFieldClick]="false"
-          [displayExpr]="gridBox_displayExpr" [showClearButton]="true" placeholder="Select a value..."
-          [showClearButton]="true" [acceptCustomValue]="true" [(opened)]="gridBoxOpened" valueChangeEvent=""
-          (onKeyDown)="onKeyDown($event)" (onInput)="onInput($event)" (onOpened)="onOpened($event)"
+        <dx-drop-down-box #dropDownBox 
+          [dataSource]="dropDownBoxDataSource" 
+          [(value)]="gridBoxValue"
+          (onValueChanged)="dropDownBoxValueChanged($event)" 
+          valueExpr="OrderNumber" 
+          [openOnFieldClick]="false"
+          [displayExpr]="gridBox_displayExpr" 
+          [showClearButton]="true" 
+          placeholder="Select a value..."
+          [acceptCustomValue]="true" 
+          [(opened)]="gridBoxOpened" 
+          valueChangeEvent=""
+          (onKeyDown)="onKeyDown($event)" 
+          (onInput)="onInput($event)" 
+          (onOpened)="onOpened($event)"
           (onClosed)="onClosed($event)">
           <dxo-drop-down-options [height]="300">
 
           </dxo-drop-down-options>
           <div *dxTemplate="let data of 'content'">
-            <dx-data-grid height="100%" width="100%" (onInitialized)="dataGridOnInitialized($event)" [columnWidth]="100"             
-              [(selectedRowKeys)]="gridBoxValue" [focusedRowIndex]="focusedRowIndex"
-              [dataSource]="dataSource" [remoteOperations]="true" [focusedRowEnabled]="true" [hoverStateEnabled]="true"
-              [(focusedRowKey)]="focusedRowKey" [autoNavigateToFocusedRow]="false"
+            <dx-data-grid height="100%" 
+              width="100%" 
+              (onInitialized)="dataGridOnInitialized($event)" 
+              [columnWidth]="100"             
+              [(selectedRowKeys)]="gridBoxValue" 
+              [focusedRowIndex]="focusedRowIndex"
+              [dataSource]="dataSource" 
+              [remoteOperations]="true" 
+              [focusedRowEnabled]="true" 
+              [hoverStateEnabled]="true"
+              [(focusedRowKey)]="focusedRowKey" 
+              [autoNavigateToFocusedRow]="false"
               (onKeyDown)="dataGridOnKeyDown($event)"
               (onContentReady)="dataGridOnContentReady($event)">
 

@@ -56,7 +56,7 @@ $(function () {
                 else {
                     var optionChangedHandler = (args) => {
                         let gridInstance = args.component;
-                        if (args.name === 'focusedRowKey') {
+                        if (args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex') {
                             gridInstance.off('optionChanged', optionChangedHandler);
                             gridInstance.focus();
                         }

@@ -60,7 +60,7 @@ function onOpened(e) {
             dataGrid.on("contentReady", contentReadyHandler);
         else {
             let optionChangedHandler = (args) => {
-                if (args.name === 'focusedRowKey') {
+                if (args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex') {
                     args.component.off('optionChanged', optionChangedHandler);
                     args.component.focus();
                 }

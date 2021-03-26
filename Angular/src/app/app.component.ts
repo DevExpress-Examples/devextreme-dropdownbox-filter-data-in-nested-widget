@@ -91,7 +91,7 @@ export class AppComponent implements AfterViewInit {
       else {
         var optionChangedHandler = (args) => {
           let gridInstance = args.component;
-          if (args.name === 'focusedRowKey') {
+          if (args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex') {
             gridInstance.off('optionChanged', optionChangedHandler);
             gridInstance.focus();
           }
@@ -136,7 +136,6 @@ export class AppComponent implements AfterViewInit {
     }
   }
   dataGridOnKeyDown(e: any) {
-    let gridInstance = e.component;
     if (e.event.keyCode === 13) {// Enter press 
       this.focusedRowIndex = e.component.option('focusedRowIndex')
       this.gridBoxValue = [this.focusedRowKey];
