@@ -9,7 +9,7 @@ This example demonstrates how to filter the data of a DropDownBox embedded in a 
 
 ![DropDownBox filtering](./dropdownbox-filtering.gif)
 
-Use [onInput](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput), [onOpened](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) and [onClosed](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event handlers to manipulate and display data.
+Use [onInput](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput), [onOpened](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) and [onClosed](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event handlers to filter and display data.
 
 ## Files to Review
 
