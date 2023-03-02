@@ -5,7 +5,7 @@
 <!-- default badges end -->
 # DropDownBox for DevExtreme - How to filter data of a nested DataGrid
 
-This example demonstrates how to filter data of a DropDownBox nested DataGrid component.
+This example demonstrates how to filter the data of a DropDownBox embedded in a DataGrid component.
 
 ![DropDownBox filtering](./dropdownbox-filtering.gif)
 
