@@ -35,26 +35,3 @@ Use [onInput](https://js.devexpress.com/Documentation/ApiReference/UI_Components
 ## More Examples
 
 - [DropDownBox - Single Selection](https://js.devexpress.com/Demos/WidgetsGallery/Demo/DropDownBox/SingleSelection)
-
-<div align="center"><img alt="DevExtreme DropDownBox - How to filter data of a nested widget when a user types text into the editor" src="dropdownbox-for-filtering.png" /></div>
-
-## Files to Review
-
-- **Angular**
-    - [app.component.html](Angular/src/app/app.component.html)
-    - [app.component.ts](Angular/src/app/app.component.ts)
-- **jQuery**
-    - [index.js](jQuery/src/index.js)
-- **React**
-    - [App.js](React/src/App.js)
-- **Vue**
-    - [App.vue](Vue/src/App.vue)
-- **ASP.Net Core**    
-    - [Index.cshtml](ASP.NET%20Core/ASP.NET%20Core/Views/Home/Index.cshtml)
-
-## Documentation
-
-- [Getting Started with DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/)
-
-- [DropDownBox - API Reference](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/)
-
