@@ -11,6 +11,6 @@ This project is created using [DevExtreme Project Templates](https://docs.devexp
 
 ## Further help
 
-You can learn more about ASP.NET Core in the [MS documentation](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-2.2).
+You can learn more about ASP.NET Core in the [MS documentation](https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-2.2).
 
 To get more help on DevExtreme submit an issue on [GitHub](https://github.com/DevExpress/devextreme/issues) or [Support Center](https://www.devexpress.com/Support/Center/Question/Create)
