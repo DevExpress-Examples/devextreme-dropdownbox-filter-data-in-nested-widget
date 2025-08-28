@@ -1,0 +1,68 @@
+@using ASP_NET_Core.Models
+
+<h2>Home</h2>
+
+<script src="~/js/DropDownBoxSearch.js"></script>
+
+@(Html.DevExtreme().DropDownBox()
+                            .Value(10270)
+                            .ValueExpr("OrderID")
+                            .ValueChangeEvent("")
+                            .AcceptCustomValue(true)
+                            .DropDownOptions((op) => op.Height(300))
+                            .OpenOnFieldClick(false)
+                            .DisplayExpr(new JS("gridBox_displayExpr"))
+                            .DataSource(d => d.Mvc().Controller("SampleData").LoadAction("Get").Key("OrderID"))
+                            .Placeholder("Enter a value...")
+                            .ShowClearButton(true)
+                            .OnClosed("onClosed")
+                            .OnInput("onInput")
+                            .OnOpened("onOpened")
+                            .OnKeyDown("onKeyDown")
+                            .OnValueChanged("gridBox_valueChanged")
+                            .ContentTemplate(new TemplateName("EmbeddedDataGridSingle"))
+)
+
+@using (Html.DevExtreme().NamedTemplate("EmbeddedDataGridSingle"))
+{
+    @(Html.DevExtreme().DataGrid<SampleOrder>()
+                    .ID("embedded-datagrid")
+                    .DataSource(d => d.Mvc().Controller("SampleData").LoadAction("Get").Key("OrderID"))
+                    .DataSourceOptions((op) =>
+                    {
+                        op.SearchExpr(new string[] { "ShipCity", "ShipCountry", "CustomerName" });                  
+                        op.Filter(new JS(
+                          @"isSearchIncomplete(component) && component.option('text') && component.option('text').length > 0 ?
+[['CustomerName', 'contains', component.option('text')], 'or',
+['ShipCountry', 'contains', component.option('text')], 'or',
+['ShipCity', 'contains', component.option('text')] ]
+: null"
+                       ));
+                    })
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Width("100%")
+                    .Height("100%")
+                    .ColumnWidth(120)
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.OrderID);
+                        columns.AddFor(m => m.OrderDate);
+                        columns.AddFor(m => m.CustomerName);
+                        columns.AddFor(m => m.ShipCountry);
+                        columns.AddFor(m => m.ShipCity);
+                    })
+                    .Paging(p => p.PageSize(10))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .FocusedRowEnabled(true)
+                    .FocusedRowIndex(0)
+                    .RemoteOperations(true)
+                    .AutoNavigateToFocusedRow(false)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"[component.option('value')]"))
+                    .OnSelectionChanged("function(e){  dataGridSelectionChanged(e, component); }")
+                    .OnKeyDown("dataGridKeyDown")
+                    .OnContentReady("function(e) { dataGridContentReady(e, component); }")
+                    .OnInitialized("dataGridInitialized")
+    )
+}
