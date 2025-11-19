@@ -21,7 +21,8 @@
               "devextreme-quill",
               "jszip",
               "devexpress-diagram",
-              "devexpress-gantt"
+              "devexpress-gantt",
+              "devextreme-aspnet-data-nojquery"
             ],
             "outputPath": "dist/Angular",
             "index": "src/index.html",

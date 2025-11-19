@@ -1,1 +1,3 @@
 node_modules/*
+src/orig_index.js
+src/orig_index.html
