@@ -20,11 +20,11 @@ Use [onInput](https://js.devexpress.com/Documentation/ApiReference/UI_Components
 - **jQuery**
     - [index.js](jQuery/src/index.js)
 - **React**
-    - [App.js](React/src/App.js)
+    - [App.tsx](React/src/App.tsx)
 - **Vue**
-    - [App.vue](Vue/src/App.vue)
+    - [App.vue](Vue/src/components/DropDownBoxWithDataGrid.vue)
 - **NetCore**
-    - [Index.cshtml](ASP.Net%20Core/ASP.Net%20Core/Views/Home/Index.cshtml)
+    - [Index.cshtml](ASP.Net%20Core/Views/Home/Index.cshtml)
 
 ## Documentation
 
