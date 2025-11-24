@@ -11,7 +11,7 @@ This example demonstrates how to filter the data of a DropDownBox embedded in a 
 
 ![DropDownBox filtering](./images/dropdownbox-filtering.gif)
 
-Use [onInput](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput), [onOpened](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) and [onClosed](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event handlers to filter and display data.
+Use [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput), [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) and [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event handlers to filter and display data.
 
 ## Files to Review
 
@@ -19,13 +19,14 @@ Use [onInput](https://js.devexpress.com/Documentation/ApiReference/UI_Components
     - [app.component.html](Angular/src/app/app.component.html)
     - [app.component.ts](Angular/src/app/app.component.ts)
 - **jQuery**
+    - [index.html](jQuery/src/index.html)
     - [index.js](jQuery/src/index.js)
 - **React**
-    - [App.js](React/src/App.js)
+    - [App.tsx](React/src/App.tsx)
 - **Vue**
-    - [App.vue](Vue/src/App.vue)
-- **NetCore**
-    - [Index.cshtml](ASP.Net%20Core/ASP.Net%20Core/Views/Home/Index.cshtml)
+    - [App.vue](Vue/src/components/DropDownBoxWithDataGrid.vue)
+- **ASP.Net Core**
+    - [Index.cshtml](ASP.Net%20Core/Views/Home/Index.cshtml)
 
 ## Documentation
 
