@@ -25,8 +25,8 @@ Use [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Com
     - [App.tsx](React/src/App.tsx)
 - **Vue**
     - [App.vue](Vue/src/components/DropDownBoxWithDataGrid.vue)
-- **ASP.Net Core**
-    - [Index.cshtml](ASP.Net%20Core/Views/Home/Index.cshtml)
+- **ASP.Net Core**    
+    - [Index.cshtml](ASP.NET%20Core/Views/Home/Index.cshtml)
 
 ## Documentation
 
