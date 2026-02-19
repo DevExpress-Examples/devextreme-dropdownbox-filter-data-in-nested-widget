@@ -1,4 +1,33 @@
+.options {
+    height: 180px;
+    width: 25vw;
+    padding: 20px;
+    background-color: rgb(191 191 191 / 15%);
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    bottom: 0;
+}
+
+.caption {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.option {
+    margin-top: 10px;
+}
+
 .demo-container {
-    margin: 50px;
-    width: 90vw;
+    margin: 40px 20px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.row p {
+    margin: 0;
 }

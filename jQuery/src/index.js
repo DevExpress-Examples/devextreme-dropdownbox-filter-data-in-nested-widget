@@ -1,86 +1,68 @@
+import {
+  makeAsyncDataSource, displayExpr, performSearch, resetSearchState,
+  handleDropDownOpened,
+} from './helpers.js';
+
 $(() => {
   let dataGridInstance;
   let searchTimerId;
-  let gridFirstLoadCompleted = false;
+  const storeKey = 'OrderNumber';
+  const url = 'https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders';
+
+  let searchTimeout = 1000;
+  const initialValue = 35709;
+  /*
+  If the key of the first record is unknown,
+  you can request data from the server
+  to retrieve it from the first returned item.
+  */
+  const firstRowKey = 35703;
 
   const dataSource = new DevExpress.data.DataSource({
-    store: makeAsyncDataSource(),
-    searchExpr: ['StoreCity', 'StoreState', 'Employee'],
+    store: makeAsyncDataSource(storeKey, url),
+    searchExpr: 'Employee',
   });
 
-  const $gridBox = $('#gridBox');
-
-  $gridBox.dxDropDownBox({
-    value: 35711,
-    valueExpr: 'OrderNumber',
-    displayExpr: (item) => (item ? `${item.Employee}: ${item.StoreState} - ${item.StoreCity} <${item.OrderNumber}>` : ''),
+  $('#gridBox').dxDropDownBox({
+    value: initialValue,
+    width: '40vw',
+    valueExpr: storeKey,
+    displayExpr,
     acceptCustomValue: true,
     openOnFieldClick: false,
     valueChangeEvent: '',
     showClearButton: true,
-    dataSource: makeAsyncDataSource(),
+    dataSource: makeAsyncDataSource(storeKey, url),
     placeholder: 'Select a value...',
-    dropDownOptions: { height: 300 },
+    dropDownOptions: { height: 400 },
     onInput: (e) => {
       clearTimeout(searchTimerId);
       searchTimerId = setTimeout(() => {
         const dropDownBox = e.component;
-        const text = dropDownBox.option('text');
-        const opened = dropDownBox.option('opened');
-        dataSource.searchValue(text);
-        if (opened && isSearchIncomplete(dropDownBox)) {
-          dataSource.load().done((items) => {
-            if (items.length > 0 && dataGridInstance) {
-              dataGridInstance.option('focusedRowKey', items[0].OrderNumber);
-            }
-          });
-        } else {
-          dropDownBox.open();
-        }
-      }, 500);
-    },
-    onOpened: (e) => {
-      const dropDownBox = e.component;
-      if (dropDownBox.isKeyDown) {
-        const contentReadyHandler = (args) => {
-          const grid = args.component;
-          grid.focus();
-          grid.off('contentReady', contentReadyHandler);
-        };
-        if (!gridFirstLoadCompleted) {
-          dataGridInstance.on('contentReady', contentReadyHandler);
-        } else {
-          const optionChangedHandler = (args) => {
-            const grid = args.component;
-            if (args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex') {
-              grid.off('optionChanged', optionChangedHandler);
-              grid.focus();
-            }
-          };
-          dataGridInstance.on('optionChanged', optionChangedHandler);
-          dataGridInstance.option('focusedRowIndex', 0);
-        }
-        dropDownBox.isKeyDown = false;
-        return;
-      }
-      if (gridFirstLoadCompleted && isSearchIncomplete(dropDownBox)) {
-        dataSource.load().done((items) => {
-          if (items.length > 0) {
-            dataGridInstance.option('focusedRowKey', items[0].OrderNumber);
-          }
-          dropDownBox.focus();
+        if (!dropDownBox.option('opened')) dropDownBox.open();
+
+        performSearch({
+          dropDownBox, dataSource, dataGridInstance,
         });
+      }, searchTimeout);
+    },
+    onOpened(e) {
+      handleDropDownOpened({ e, dataGridInstance });
+    },
+    onClosed(e) {
+      resetSearchState(e, dataSource, dataGridInstance);
+    },
+    onOptionChanged(e) {
+      const gridFirstLoadCompleted = e.component.option('gridFirstLoadCompleted');
+      if (e.name === 'text' && !e.value && gridFirstLoadCompleted) {
+        dataGridInstance.option('focusedRowKey', firstRowKey);
       }
     },
-    onClosed: (e) => {
-      const dropDownBox = e.component;
-      const value = dropDownBox.option('value');
-      const searchValue = dataSource.searchValue();
-      if (isSearchIncomplete(dropDownBox)) {
-        dropDownBox.option('value', value === '' ? null : '');
-      }
-      if (searchValue) {
-        dataSource.searchValue(null);
+    onValueChanged(args) {
+      clearTimeout(searchTimerId);
+      dataGridInstance?.option('selectedRowKeys', args.value ? [args.value] : []);
+      if (args.value) {
+        args.component.close();
       }
     },
     onKeyDown: (e) => {
@@ -98,17 +80,17 @@ $(() => {
       const value = dropDownBox.option('value');
       const $dataGridContainer = $('<div>');
       container.append($dataGridContainer);
+
       $dataGridContainer.dxDataGrid({
         dataSource,
-        hoverStateEnabled: true,
         paging: { enabled: true, pageSize: 10 },
-        focusedRowIndex: 0,
         focusedRowEnabled: true,
+        focusedRowKey: value,
         autoNavigateToFocusedRow: false,
-        onContentReady: (_args) => {
+        onContentReady: () => {
+          const gridFirstLoadCompleted = dropDownBox.option('gridFirstLoadCompleted');
           if (!gridFirstLoadCompleted) {
-            gridFirstLoadCompleted = true;
-            dropDownBox.focus();
+            dropDownBox.option('gridFirstLoadCompleted', true);
           }
         },
         remoteOperations: true,
@@ -117,16 +99,27 @@ $(() => {
         selectedRowKeys: [value],
         height: '100%',
         width: '100%',
-        columnWidth: 100,
+        columnAutoWidth: true,
         onKeyDown: (args) => {
           const grid = args.component;
           if (args.event.keyCode === 13) {
             grid.selectRows([grid.option('focusedRowKey')], false);
           }
         },
+        onFocusedRowChanged: (event) => {
+          if (event.component.option('focusAfterLoading')) {
+            setTimeout(() => {
+              dropDownBox.focus();
+            });
+            dataGridInstance.option('focusAfterLoading', false);
+          }
+        },
         onSelectionChanged: (args) => {
-          const keys = args.selectedRowKeys;
-          dropDownBox.option('value', keys.length ? keys[0] : null);
+          if (!args.component.option('resetSelection')) {
+            const keys = args.selectedRowKeys;
+            dropDownBox.option('value', keys.length ? keys[0] : null);
+          }
+          args.component.option('resetSelection', false);
         },
         columns: [
           { dataField: 'OrderNumber', caption: 'ID', dataType: 'number' },
@@ -138,27 +131,38 @@ $(() => {
         ],
       });
       dataGridInstance = $dataGridContainer.dxDataGrid('instance');
-      dropDownBox.on('valueChanged', (args) => {
-        clearTimeout(searchTimerId);
-        dataGridInstance.option('selectedRowKeys', args.value ? [args.value] : []);
-        dropDownBox.close();
-      });
       return container;
     },
   });
-});
-
-function makeAsyncDataSource() {
-  return DevExpress.data.AspNet.createStore({
-    key: 'OrderNumber',
-    loadUrl: 'https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/orders',
+  $('#searchExprOption').dxSelectBox({
+    items: [{
+      name: "'Employee'",
+      value: 'Employee',
+    }, {
+      name: "['OrderNumber', 'Employee']",
+      value: ['OrderNumber', 'Employee'],
+    }, {
+      name: "['StoreCity', 'Employee']",
+      value: ['StoreCity', 'Employee'],
+    }, {
+      name: "['OrderNumber','StoreCity', 'StoreState', 'Employee']",
+      value: ['OrderNumber', 'StoreCity', 'StoreState', 'Employee'],
+    }],
+    displayExpr: 'name',
+    valueExpr: 'value',
+    value: 'Employee',
+    onValueChanged(e) {
+      dataSource.searchExpr(e.value);
+    },
   });
-}
-
-function isSearchIncomplete(dropDownBox) {
-  let displayValue = dropDownBox.option('displayValue');
-  let text = dropDownBox.option('text');
-  text = text && text.length && text;
-  displayValue = displayValue && displayValue.length && displayValue[0];
-  return text !== displayValue;
-}
+  $('#searchTimeoutOption').dxNumberBox({
+    min: 0,
+    max: 10000,
+    value: 1000,
+    showSpinButtons: true,
+    step: 100,
+    onValueChanged(e) {
+      searchTimeout = e.value;
+    },
+  });
+});
