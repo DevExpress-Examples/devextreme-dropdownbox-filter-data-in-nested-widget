@@ -1,5 +1,3 @@
-let hasLoadedItems = false;
-
 function isSearchIncomplete(dropDownBox) {
   let displayValue = dropDownBox.option('displayValue');
   let text = dropDownBox.option('text');
@@ -12,9 +10,6 @@ export function makeAsyncDataSource(key, url) {
   return DevExpress.data.AspNet.createStore({
     key,
     loadUrl: url,
-    onLoaded(e) {
-      hasLoadedItems = !!e.length;
-    },
   });
 }
 
@@ -39,6 +34,7 @@ export function performSearch({ dropDownBox, dataSource, dataGridInstance }) {
 
 export function resetSearchState(e, dataSource, dataGridInstance) {
   const dropDownBox = e.component;
+  const hasLoadedItems = dataGridInstance.getVisibleRows().length;
   const text = dropDownBox.option('text');
   const displayValue = dropDownBox.option('displayValue')[0];
   const resetValue = text && text !== displayValue;
