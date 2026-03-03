@@ -57,23 +57,37 @@ export function handleDropDownOpened({ e, dataGridInstance }) {
   const dropDownBox = e.component;
   const gridFirstLoadCompleted = dropDownBox.option('gridFirstLoadCompleted');
 
-  if (dropDownBox.isKeyDown && !gridFirstLoadCompleted) {
-    const optionChangedHandler = (args) => {
-      const grid = args.component;
-      if (args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex') {
-        grid.off('optionChanged', optionChangedHandler);
+  const handleOptionChanged = (args) => {
+    const grid = args.component;
+    const triggerCondition = gridFirstLoadCompleted
+      ? args.name === 'opened'
+      : args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex';
+
+    if (triggerCondition) {
+      grid.off('optionChanged', handleOptionChanged);
+
+      if (gridFirstLoadCompleted) {
+        requestAnimationFrame(() => {
+          grid.focus();
+          grid.option('opened', false);
+        });
+      } else {
         grid.focus();
       }
-    };
-    dataGridInstance.on('optionChanged', optionChangedHandler);
-    dropDownBox.isKeyDown = false;
+    }
+  };
+
+  dataGridInstance.on('optionChanged', handleOptionChanged);
+
+  if (gridFirstLoadCompleted) {
+    dataGridInstance.option('opened', true);
   }
 
   const isTextEqualToDisplayValue = dropDownBox.option('text') === dropDownBox.option('displayValue')[0];
-  if ((dropDownBox.option('value') && !dropDownBox.option('text')) || !isTextEqualToDisplayValue) {
-    if (dataGridInstance.option('selectedRowKeys').length) {
-      dataGridInstance.option('resetSelection', true);
-      dataGridInstance.option('selectedRowKeys', []);
-    }
+  const shouldClearSelection = (dropDownBox.option('value') && !dropDownBox.option('text')) || !isTextEqualToDisplayValue;
+
+  if (shouldClearSelection && dataGridInstance.option('selectedRowKeys').length) {
+    dataGridInstance.option('resetSelection', true);
+    dataGridInstance.option('selectedRowKeys', []);
   }
 }

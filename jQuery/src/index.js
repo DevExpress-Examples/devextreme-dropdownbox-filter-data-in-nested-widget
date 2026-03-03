@@ -69,10 +69,7 @@ $(() => {
       const dropDownBox = e.component;
       if (e.event.keyCode !== 40) return;
       if (!dropDownBox.option('opened')) {
-        dropDownBox.isKeyDown = true;
         dropDownBox.open();
-      } else if (dataGridInstance) {
-        dataGridInstance.focus();
       }
     },
     contentTemplate: (e, container) => {
