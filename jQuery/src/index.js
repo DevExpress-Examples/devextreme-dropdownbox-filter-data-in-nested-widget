@@ -70,6 +70,8 @@ $(() => {
       if (e.event.keyCode !== 40) return;
       if (!dropDownBox.option('opened')) {
         dropDownBox.open();
+      } else if (dataGridInstance) {
+        dataGridInstance.focus();
       }
     },
     contentTemplate: (e, container) => {
