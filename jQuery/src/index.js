@@ -99,7 +99,7 @@ $(() => {
         columnAutoWidth: true,
         onKeyDown: (args) => {
           const grid = args.component;
-          if (args.event.keyCode === 13) {
+          if (args.event?.keyCode === 13) {
             grid.selectRows([grid.option('focusedRowKey')], false);
           }
         },
@@ -115,6 +115,7 @@ $(() => {
           if (!args.component.option('resetSelection')) {
             const keys = args.selectedRowKeys;
             dropDownBox.option('value', keys.length ? keys[0] : null);
+            dropDownBox.focus();
           }
           args.component.option('resetSelection', false);
         },
