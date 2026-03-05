@@ -11,12 +11,6 @@ $(() => {
 
   let searchTimeout = 1000;
   const initialValue = 35709;
-  /*
-  If the key of the first record is unknown,
-  you can request data from the server
-  to retrieve it from the first returned item.
-  */
-  const firstRowKey = 35703;
 
   const dataSource = new DevExpress.data.DataSource({
     store: makeAsyncDataSource(storeKey, url),
@@ -55,7 +49,9 @@ $(() => {
     onOptionChanged(e) {
       const gridFirstLoadCompleted = e.component.option('gridFirstLoadCompleted');
       if (e.name === 'text' && !e.value && gridFirstLoadCompleted) {
-        dataGridInstance.option('focusedRowKey', firstRowKey);
+        dataGridInstance.pageIndex(0).done(() => {
+          dataGridInstance.option('focusedRowIndex', 0);
+        });
       }
     },
     onValueChanged(args) {
