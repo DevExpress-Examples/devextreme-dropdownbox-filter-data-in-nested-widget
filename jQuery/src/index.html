@@ -5,26 +5,27 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../node_modules/devextreme-dist/css/dx.light.css" />
     <link rel="stylesheet" type="text/css" href="index.css" />
     <script src="../node_modules/jquery/dist/jquery.js"></script>
     <script src="../node_modules/devextreme-dist/js/dx.all.js"></script>
     <script src="../node_modules/devextreme-aspnet-data/js/dx.aspnet.data.js"></script>
-    <script src="index.js"></script>
-    <style>
-      .demo-container .dx-fieldset {
-        height: 500px;
-      }
-    </style>
+    <script type="module" src="./index.js"></script>
   </head>
   <body class="dx-viewport demo-container">
-    <div class="dx-fieldset">
-      <div class="dx-field">
-        <div class="dx-field-label"> DropDownBox with search and embedded DataGrid </div>
-        <div class="dx-field-value">
-          <div id="gridBox"></div>
-        </div>
+    <div class="row">
+      <p>DropDownBox with search and embedded DataGrid</p>
+      <div id="gridBox"></div>
+    </div>
+    <div class="options">
+      <div class="caption">Search Options</div>
+      <div class="option">
+        <div>Search Expression</div>
+        <div id="searchExprOption"></div>
+      </div>
+      <div class="option">
+        <div>Search Timeout</div>
+        <div id="searchTimeoutOption"></div>
       </div>
     </div>
   </body>
