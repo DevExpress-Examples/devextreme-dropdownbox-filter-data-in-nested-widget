@@ -95,11 +95,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   private isSearchIncomplete(dropDownBox: any): boolean {
-    const displayValue = dropDownBox.option('displayValue');
+    let displayValue = dropDownBox.option('displayValue');
     const text = dropDownBox.option('text');
     const textValue = text?.length ? text : undefined;
-    const displayFirst = displayValue?.length ? displayValue[0] : undefined;
-    return textValue !== displayFirst;
+    displayValue = displayValue?.length && displayValue[0];
+    return textValue !== displayValue;
   }
 
   onInput(e: DxDropDownBoxTypes.InputEvent): void {
