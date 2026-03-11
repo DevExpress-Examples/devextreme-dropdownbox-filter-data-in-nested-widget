@@ -2,11 +2,9 @@ import {
   AfterViewInit, Component, inject, ViewChild,
 } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
-import * as AspNetData from 'devextreme-aspnet-data-nojquery';
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
 import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
-import type dxDropDownBox from 'devextreme/ui/drop_down_box';
 import { AppService } from './app.service';
 
 interface OrderItem {
@@ -31,8 +29,6 @@ export class AppComponent implements AfterViewInit {
 
   private readonly appService = inject(AppService);
 
-  isKeyDown = false;
-
   resetSelection = false;
 
   focusAfterLoading = false;
@@ -55,9 +51,7 @@ export class AppComponent implements AfterViewInit {
 
   focusedRowIndex = 0;
 
-  focusedRowKey: number | null = null;
-
-  firstLoadCompleted = false;
+  focusedRowKey: number | null = 35709;
 
   constructor() {
     this.dataSource = this.appService.createGridDataSource();
@@ -76,6 +70,7 @@ export class AppComponent implements AfterViewInit {
   onDropDownValueChanged(args: DxDropDownBoxTypes.ValueChangedEvent): void {
     if (this.searchTimer) clearTimeout(this.searchTimer);
     this.selectedRowKeys = args.value ? [args.value] : [];
+    this.focusedRowKey = args.value ? args.value : null;
     if (args.value) {
       args.component.close();
     }
@@ -111,7 +106,6 @@ export class AppComponent implements AfterViewInit {
     if (this.searchTimer) clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(() => {
       if (!this.gridBoxOpened) this.gridBoxOpened = true;
-
       const text = e.component.option('text');
       this.dataSource.searchValue(text ?? null);
       if (this.isSearchIncomplete(e.component)) {
@@ -126,32 +120,27 @@ export class AppComponent implements AfterViewInit {
   }
 
   onOpened(e: DxDropDownBoxTypes.OpenedEvent): void {
+    let gridFirstLoadCompleted = this.gridFirstLoadCompleted;
     const dropDownBox = e.component;
-
     const handleOptionChanged = (args: DxDataGridTypes.OptionChangedEvent): void => {
       const grid = args.component;
-      const triggerCondition = this.gridFirstLoadCompleted
+      const triggerCondition = gridFirstLoadCompleted
         ? args.name === 'opened'
-        : args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex';
+        : args.name === 'focusedRowKey' || args.name === 'focusedRowIndex';
 
       if (triggerCondition) {
         grid.off('optionChanged', handleOptionChanged);
-
-        if (this.gridFirstLoadCompleted) {
-          requestAnimationFrame(() => {
-            grid.focus();
-            // this is used to trigger the optionChanged event
-            grid.option('opened', false);
-          });
-        } else {
+        requestAnimationFrame(() => {
           grid.focus();
-        }
+          grid.option('opened', false);
+        });
       }
     };
 
     this.dataGrid.instance.on('optionChanged', handleOptionChanged);
 
     if (this.gridFirstLoadCompleted) {
+      // this is used to trigger the optionChanged event
       this.dataGrid.instance.option('opened', true);
     }
 
@@ -189,15 +178,17 @@ export class AppComponent implements AfterViewInit {
 
   onOptionChanged(args: DxDropDownBoxTypes.OptionChangedEvent): void {
     if (args.name === 'text' && !args.value && this.gridFirstLoadCompleted) {
-      this.dataGrid.instance.pageIndex(0).then(() => {
-        this.focusedRowIndex = 0;
-      }).catch(() => {});
+      setTimeout(() => {
+        this.dataGrid.instance.pageIndex(0).then(() => {
+          this.focusedRowKey = 35703;
+        }).catch(() => {});
+      }, 500);
     }
   }
 
   dataGridContentReady(e: DxDataGridTypes.ContentReadyEvent): void {
-    if (!this.firstLoadCompleted) {
-      this.firstLoadCompleted = true;
+    if (!this.gridFirstLoadCompleted) {
+      this.gridFirstLoadCompleted = true;
     }
   }
 
