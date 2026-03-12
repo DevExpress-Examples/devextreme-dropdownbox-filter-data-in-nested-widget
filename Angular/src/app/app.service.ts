@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import DataSource from 'devextreme/data/data_source';
 import * as AspNetData from 'devextreme-aspnet-data-nojquery';
 
 interface OrderItem {
@@ -20,25 +19,6 @@ export class AppService {
   constructor() {}
 
   /**
-   * Create async data source for DropDownBox
-   */
-  createDropDownDataSource(): DataSource {
-    return new DataSource({
-      store: this.makeAsyncDataSource(),
-    } as any);
-  }
-
-  /**
-   * Create async data source for DataGrid with search
-   */
-  createGridDataSource(): DataSource {
-    return new DataSource({
-      store: this.makeAsyncDataSource(),
-      searchExpr: ['StoreCity', 'StoreState', 'Employee'],
-    } as any);
-  }
-
-  /**
    * Format display expression for dropdown
    */
   formatDisplayExpr(item: OrderItem | null): string {
@@ -55,10 +35,7 @@ export class AppService {
     return textValue !== displayFirst;
   }
 
-  /**
-   * Private: Create async data store
-   */
-  private makeAsyncDataSource(): unknown {
+  makeAsyncDataSource(): any {
     return AspNetData.createStore({
       key: 'OrderNumber',
       loadUrl: this.API_URL,

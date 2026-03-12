@@ -4,6 +4,7 @@ import {
 import DataSource from 'devextreme/data/data_source';
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
 import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
+import type { DxSelectBoxTypes } from 'devextreme-angular/ui/select-box';
 import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
 import { AppService } from './app.service';
 
@@ -22,12 +23,33 @@ interface OrderItem {
   styleUrls: ['./app.component.scss'],
   standalone: false,
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   @ViewChild('dropDownBox', { static: false }) dropDownBox!: DxDropDownBoxComponent;
 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
 
   private readonly appService = inject(AppService);
+
+  searchExprOptions: any[] = [
+    {
+      name: '\'Employee\'',
+      value: 'Employee',
+    },
+    {
+      name: '[\'OrderNumber\', \'Employee\']',
+      value: ['OrderNumber', 'Employee'],
+    },
+    {
+      name: '[\'StoreCity\', \'Employee\']',
+      value: ['StoreCity', 'Employee'],
+    },
+    {
+      name: '[\'OrderNumber\',\'StoreCity\', \'StoreState\', \'Employee\']',
+      value: ['OrderNumber', 'StoreCity', 'StoreState', 'Employee'],
+    },
+  ];
+
+  selectedSearchExpr: string | string[] = 'Employee';
 
   resetSelection = false;
 
@@ -39,7 +61,7 @@ export class AppComponent implements AfterViewInit {
 
   dataSource: DataSource;
 
-  dropDownBoxDataSource: DataSource;
+  dropDownBoxDataSource;
 
   searchTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -54,12 +76,16 @@ export class AppComponent implements AfterViewInit {
   focusedRowKey: number | null = 35709;
 
   constructor() {
-    this.dataSource = this.appService.createGridDataSource();
-    this.dropDownBoxDataSource = this.appService.createDropDownDataSource();
+    this.dataSource = new DataSource({
+      store: this.appService.makeAsyncDataSource(),
+      searchExpr: this.selectedSearchExpr,
+    });
+
+    this.dropDownBoxDataSource = this.appService.makeAsyncDataSource();
   }
 
-  ngAfterViewInit(): void {
-    // Component initialized
+  onSearchExprChanged(e: DxSelectBoxTypes.ValueChangedEvent): void {
+    this.dataSource.searchExpr(e.value);
   }
 
   gridBoxDisplayExpr(item: OrderItem): string {

@@ -65,7 +65,28 @@
     <div class="caption">Search Options</div>
     <div class="option">
       <div>Search Expression</div>
-      <div>StoreCity, StoreState, Employee</div>
+      <dx-select-box
+        id="searchExpr"
+        [items]="searchExprOptions"
+        displayExpr="name"
+        valueExpr="value"
+        [value]="selectedSearchExpr"
+        (onValueChanged)="onSearchExprChanged($event)"
+      >
+      </dx-select-box>
+    </div>
+
+    <div class="option">
+      <div>Search Timeout</div>
+      <dx-number-box
+        id="searchTimeout"
+        [min]="0"
+        [max]="10000"
+        [(value)]="searchTimeout"
+        [showSpinButtons]="true"
+        [step]="100"
+      >
+      </dx-number-box>
     </div>
   </div>
 </div>
