@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, inject, ViewChild,
+  AfterViewInit, Component, inject, ViewChild, ChangeDetectorRef
 } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
@@ -75,7 +75,7 @@ export class AppComponent {
 
   focusedRowKey: number | null = 35709;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.dataSource = new DataSource({
       store: this.appService.makeAsyncDataSource(),
       searchExpr: this.selectedSearchExpr,
@@ -115,6 +115,7 @@ export class AppComponent {
     if (!this.resetSelection) {
       const keys = args.selectedRowKeys;
       this.dropDownValue = keys.length ? keys[0] : null;
+      this.cdr.detectChanges();
       this.dropDownBox.instance.focus();
     }
     this.resetSelection = false;
@@ -190,8 +191,9 @@ export class AppComponent {
     if (!hasLoadedItems) {
       dropDownBox.reset('');
       this.dataSource.searchValue('');
-      // eslint-disable-next-line no-void
-      void this.dataSource.load();
+      this.dataSource.load()
+        .then(() => {})
+        .catch((error) => {});
       return;
     }
 
@@ -219,16 +221,14 @@ export class AppComponent {
   }
 
   dataGridKeyDown(e: DxDataGridTypes.KeyDownEvent): void {
-    if (e.event?.keyCode === 13 && this.focusedRowKey) {
+    if (e.event?.key === 'Enter' && this.focusedRowKey) {
       this.selectedRowKeys = [this.focusedRowKey];
     }
   }
 
   onDropDownBoxKeyDown(e: DxDropDownBoxTypes.KeyDownEvent): void {
     const dropDownBox = e.component;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    if (e.event.keyCode !== 40) return;
+    if (e.event?.key !== 'ArrowDown') return;
     if (!this.gridBoxOpened) {
       dropDownBox.open();
     } else if (this.dataGrid?.instance) {
