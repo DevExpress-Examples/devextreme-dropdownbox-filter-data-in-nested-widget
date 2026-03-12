@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, inject, ViewChild, ChangeDetectorRef
+  AfterViewInit, Component, inject, ViewChild, ChangeDetectorRef,
 } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
@@ -75,7 +75,7 @@ export class AppComponent {
 
   focusedRowKey: number | null = 35709;
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private readonly cdr: ChangeDetectorRef) {
     this.dataSource = new DataSource({
       store: this.appService.makeAsyncDataSource(),
       searchExpr: this.selectedSearchExpr,

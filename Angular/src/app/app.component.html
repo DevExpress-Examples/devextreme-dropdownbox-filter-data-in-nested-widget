@@ -21,7 +21,9 @@
       (onOpened)="onOpened($event)"
       (onClosed)="onClosed($event)"
     >
-      <dxo-drop-down-box-drop-down-options [height]="400"></dxo-drop-down-box-drop-down-options>
+      <dxo-drop-down-box-drop-down-options
+        [height]="400"
+      ></dxo-drop-down-box-drop-down-options>
 
       <div *dxTemplate="let data of 'content'">
         <dx-data-grid
@@ -46,14 +48,29 @@
             caption="ID"
             dataType="number"
           ></dxi-data-grid-column>
-          <dxi-data-grid-column dataField="OrderDate" dataType="date"></dxi-data-grid-column>
-          <dxi-data-grid-column dataField="StoreState" dataType="string"></dxi-data-grid-column>
-          <dxi-data-grid-column dataField="StoreCity" dataType="string"></dxi-data-grid-column>
-          <dxi-data-grid-column dataField="Employee" dataType="string"></dxi-data-grid-column>
+          <dxi-data-grid-column
+            dataField="OrderDate"
+            dataType="date"
+          ></dxi-data-grid-column>
+          <dxi-data-grid-column
+            dataField="StoreState"
+            dataType="string"
+          ></dxi-data-grid-column>
+          <dxi-data-grid-column
+            dataField="StoreCity"
+            dataType="string"
+          ></dxi-data-grid-column>
+          <dxi-data-grid-column
+            dataField="Employee"
+            dataType="string"
+          ></dxi-data-grid-column>
           <dxi-data-grid-column dataField="SaleAmount" dataType="number">
             <dxo-format type="currency" [precision]="2"></dxo-format>
           </dxi-data-grid-column>
-          <dxo-data-grid-paging [enabled]="true" [pageSize]="10"></dxo-data-grid-paging>
+          <dxo-data-grid-paging
+            [enabled]="true"
+            [pageSize]="10"
+          ></dxo-data-grid-paging>
           <dxo-data-grid-selection mode="single"></dxo-data-grid-selection>
           <dxo-data-grid-scrolling mode="virtual"></dxo-data-grid-scrolling>
         </dx-data-grid>
