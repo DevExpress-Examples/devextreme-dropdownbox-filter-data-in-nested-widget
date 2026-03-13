@@ -9,15 +9,6 @@ import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
 import DataSource from 'devextreme/data/data_source';
 
-interface OrderItem {
-  OrderNumber: number;
-  Employee: string;
-  StoreState: string;
-  StoreCity: string;
-  OrderDate: string;
-  SaleAmount: number;
-}
-
 @Component({
   selector: 'app-drop-down-grid',
   templateUrl: './drop-down-grid.html',
@@ -28,13 +19,15 @@ export class DropDownGridComponent {
 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
 
-  @Input() selectedRowKey = 35709;
+  @Input() selectedRowKey!: number;
 
   @Input() dataSource!: DataSource;
 
   @Input() dropDownBoxDataSource: any;
 
-  @Input() searchTimeout = 1000;
+  @Input() searchTimeout!: number;
+
+  @Input() displayExpr!: (item: any) => string;
 
   dropDownValue: number | null = null;
 
@@ -61,11 +54,6 @@ export class DropDownGridComponent {
     this.selectedRowKeys = [this.selectedRowKey];
     this.focusedRowKey = this.selectedRowKey;
   }
-
-  gridBoxDisplayExpr = (item: OrderItem): string => {
-    if (!item || typeof item !== 'object') return '';
-    return `${item.Employee}: ${item.StoreState} - ${item.StoreCity} <${item.OrderNumber}>`;
-  };
 
   onDropDownValueChanged(args: DxDropDownBoxTypes.ValueChangedEvent): void {
     if (this.searchTimer) clearTimeout(this.searchTimer);

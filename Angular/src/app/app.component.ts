@@ -14,6 +14,8 @@ import { AppService } from './app.service';
 export class AppComponent {
   private readonly appService = inject(AppService);
 
+  readonly displayExpr = this.appService.formatDisplayExpr.bind(this.appService);
+
   searchExprOptions = [
     {
       name: '\'Employee\'',

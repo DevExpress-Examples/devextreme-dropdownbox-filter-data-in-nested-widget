@@ -18,21 +18,9 @@ export class AppService {
 
   constructor() {}
 
-  /**
-   * Format display expression for dropdown
-   */
   formatDisplayExpr(item: OrderItem | null): string {
     if (!item || typeof item !== 'object') return '';
     return `${item.Employee}: ${item.StoreState} - ${item.StoreCity} <${item.OrderNumber}>`;
-  }
-
-  /**
-   * Check if search is incomplete
-   */
-  isSearchIncomplete(displayValue: string[] | undefined, text: string | undefined): boolean {
-    const textValue = text?.length ? text : undefined;
-    const displayFirst = displayValue?.length ? displayValue[0] : undefined;
-    return textValue !== displayFirst;
   }
 
   makeAsyncDataSource(): any {
