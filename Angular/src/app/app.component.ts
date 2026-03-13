@@ -1,21 +1,9 @@
 import {
-  AfterViewInit, Component, inject, ViewChild, ChangeDetectorRef,
+  Component, inject,
 } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
-import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
-import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import type { DxSelectBoxTypes } from 'devextreme-angular/ui/select-box';
-import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
 import { AppService } from './app.service';
-
-interface OrderItem {
-  OrderNumber: number;
-  Employee: string;
-  StoreState: string;
-  StoreCity: string;
-  OrderDate: string;
-  SaleAmount: number;
-}
 
 @Component({
   selector: 'app-root',
@@ -24,13 +12,9 @@ interface OrderItem {
   standalone: false,
 })
 export class AppComponent {
-  @ViewChild('dropDownBox', { static: false }) dropDownBox!: DxDropDownBoxComponent;
-
-  @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
-
   private readonly appService = inject(AppService);
 
-  searchExprOptions: any[] = [
+  searchExprOptions = [
     {
       name: '\'Employee\'',
       value: 'Employee',
@@ -51,188 +35,24 @@ export class AppComponent {
 
   selectedSearchExpr: string | string[] = 'Employee';
 
-  resetSelection = false;
-
-  focusAfterLoading = false;
-
-  gridFirstLoadCompleted = false;
-
   searchTimeout = 1000;
 
   dataSource: DataSource;
 
-  dropDownBoxDataSource;
+  dropDownBoxDataSource: DataSource;
 
-  searchTimer: ReturnType<typeof setTimeout> | null = null;
-
-  dropDownValue = 35709;
-
-  selectedRowKeys = [35709];
-
-  gridBoxOpened = false;
-
-  focusedRowIndex = 0;
-
-  focusedRowKey: number | null = 35709;
-
-  constructor(private readonly cdr: ChangeDetectorRef) {
+  constructor() {
     this.dataSource = new DataSource({
       store: this.appService.makeAsyncDataSource(),
       searchExpr: this.selectedSearchExpr,
     });
 
-    this.dropDownBoxDataSource = this.appService.makeAsyncDataSource();
+    this.dropDownBoxDataSource = new DataSource({
+      store: this.appService.makeAsyncDataSource(),
+    });
   }
 
   onSearchExprChanged(e: DxSelectBoxTypes.ValueChangedEvent): void {
     this.dataSource.searchExpr(e.value);
-  }
-
-  gridBoxDisplayExpr(item: OrderItem): string {
-    if (!item || typeof item !== 'object') return '';
-    return `${item.Employee}: ${item.StoreState} - ${item.StoreCity} <${item.OrderNumber}>`;
-  }
-
-  onDropDownValueChanged(args: DxDropDownBoxTypes.ValueChangedEvent): void {
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.selectedRowKeys = args.value ? [args.value] : [];
-    this.focusedRowKey = args.value ? args.value : null;
-    if (args.value) {
-      args.component.close();
-    }
-  }
-
-  onFocusedRowChanged(args: DxDataGridTypes.FocusedRowChangedEvent): void {
-    if (this.focusAfterLoading) {
-      setTimeout(() => {
-        this.dropDownBox.instance.focus();
-      });
-      this.focusAfterLoading = false;
-    }
-  }
-
-  onSelectionChanged(args: DxDataGridTypes.SelectionChangedEvent): void {
-    if (!this.resetSelection) {
-      const keys = args.selectedRowKeys;
-      this.dropDownValue = keys.length ? keys[0] : null;
-      this.cdr.detectChanges();
-      this.dropDownBox.instance.focus();
-    }
-    this.resetSelection = false;
-  }
-
-  private isSearchIncomplete(dropDownBox: any): boolean {
-    let displayValue = dropDownBox.option('displayValue');
-    const text = dropDownBox.option('text');
-    const textValue = text?.length ? text : undefined;
-    displayValue = displayValue?.length && displayValue[0];
-    return textValue !== displayValue;
-  }
-
-  onInput(e: DxDropDownBoxTypes.InputEvent): void {
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(() => {
-      if (!this.gridBoxOpened) this.gridBoxOpened = true;
-      const text = e.component.option('text');
-      this.dataSource.searchValue(text ?? null);
-      if (this.isSearchIncomplete(e.component)) {
-        this.focusAfterLoading = true;
-        this.dataSource.load().then((items) => {
-          if (items.length > 0) {
-            this.focusedRowKey = items[0].OrderNumber;
-          }
-        }).catch(() => {});
-      }
-    }, this.searchTimeout);
-  }
-
-  onOpened(e: DxDropDownBoxTypes.OpenedEvent): void {
-    let gridFirstLoadCompleted = this.gridFirstLoadCompleted;
-    const dropDownBox = e.component;
-    const handleOptionChanged = (args: DxDataGridTypes.OptionChangedEvent): void => {
-      const grid = args.component;
-      const triggerCondition = gridFirstLoadCompleted
-        ? args.name === 'opened'
-        : args.name === 'focusedRowKey' || args.name === 'focusedRowIndex';
-
-      if (triggerCondition) {
-        grid.off('optionChanged', handleOptionChanged);
-        requestAnimationFrame(() => {
-          grid.focus();
-          grid.option('opened', false);
-        });
-      }
-    };
-
-    this.dataGrid.instance.on('optionChanged', handleOptionChanged);
-
-    if (this.gridFirstLoadCompleted) {
-      // this is used to trigger the optionChanged event
-      this.dataGrid.instance.option('opened', true);
-    }
-
-    const displayValue = dropDownBox.option('displayValue') as string[];
-    const isTextEqualToDisplayValue = dropDownBox.option('text') === displayValue[0];
-    const shouldClearSelection = (dropDownBox.option('value') && !dropDownBox.option('text')) || !isTextEqualToDisplayValue;
-
-    if (shouldClearSelection && this.selectedRowKeys?.length) {
-      this.resetSelection = true;
-      this.selectedRowKeys = [];
-    }
-  }
-
-  onClosed(e: DxDropDownBoxTypes.ClosedEvent): void {
-    const dropDownBox = e.component;
-    const hasLoadedItems = this.dataGrid.instance.getVisibleRows().length;
-    const text = dropDownBox.option('text');
-    const displayValue = dropDownBox.option('displayValue') as string[];
-    const resetValue = text && text !== displayValue[0];
-
-    if (!hasLoadedItems) {
-      dropDownBox.reset('');
-      this.dataSource.searchValue('');
-      this.dataSource.load()
-        .then(() => {})
-        .catch((error) => {});
-      return;
-    }
-
-    if (resetValue) {
-      const firstKey = this.dataGrid.instance.getKeyByRowIndex(0);
-      this.selectedRowKeys = [firstKey];
-      this.focusedRowKey = firstKey;
-    }
-  }
-
-  onOptionChanged(args: DxDropDownBoxTypes.OptionChangedEvent): void {
-    if (args.name === 'text' && !args.value && this.gridFirstLoadCompleted) {
-      setTimeout(() => {
-        this.dataGrid.instance.pageIndex(0).then(() => {
-          this.focusedRowKey = 35703;
-        }).catch(() => {});
-      }, 500);
-    }
-  }
-
-  dataGridContentReady(e: DxDataGridTypes.ContentReadyEvent): void {
-    if (!this.gridFirstLoadCompleted) {
-      this.gridFirstLoadCompleted = true;
-    }
-  }
-
-  dataGridKeyDown(e: DxDataGridTypes.KeyDownEvent): void {
-    if (e.event?.key === 'Enter' && this.focusedRowKey) {
-      this.selectedRowKeys = [this.focusedRowKey];
-    }
-  }
-
-  onDropDownBoxKeyDown(e: DxDropDownBoxTypes.KeyDownEvent): void {
-    const dropDownBox = e.component;
-    if (e.event?.key !== 'ArrowDown') return;
-    if (!this.gridBoxOpened) {
-      dropDownBox.open();
-    } else if (this.dataGrid?.instance) {
-      this.dataGrid.instance.focus();
-    }
   }
 }
