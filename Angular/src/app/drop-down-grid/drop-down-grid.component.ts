@@ -8,6 +8,7 @@ import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular'
 import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
 import DataSource from 'devextreme/data/data_source';
+import DropDownBox from 'devextreme/ui/drop_down_box';
 
 @Component({
   selector: 'app-drop-down-grid',
@@ -60,7 +61,7 @@ export class DropDownGridComponent {
     this.selectedRowKeys = args.value ? [args.value] : [];
     this.focusedRowKey = args.value ? args.value : null;
     if (args.value) {
-      args.component.close();
+      this.gridBoxOpened = false;
     }
   }
 
@@ -83,10 +84,12 @@ export class DropDownGridComponent {
     this.resetSelection = false;
   }
 
-  private isSearchIncomplete(dropDownBox: any): boolean {
+  private isSearchIncomplete(dropDownBox: DropDownBox): boolean {
     let displayValue = dropDownBox.option('displayValue');
     const text = dropDownBox.option('text');
     const textValue = text?.length ? text : undefined;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error (private API)
     displayValue = displayValue?.length && displayValue[0];
     return textValue !== displayValue;
   }
@@ -169,7 +172,7 @@ export class DropDownGridComponent {
     if (args.name === 'text' && !args.value && this.gridFirstLoadCompleted) {
       setTimeout(() => {
         this.dataGrid.instance.pageIndex(0).then(() => {
-          this.dataGrid.instance.option('focusedRowIndex', 0);
+          this.focusedRowIndex = 0;
         }).catch(() => {});
       }, 500);
     }

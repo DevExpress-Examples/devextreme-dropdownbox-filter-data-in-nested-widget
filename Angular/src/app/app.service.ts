@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as AspNetData from 'devextreme-aspnet-data-nojquery';
+import CustomStore from 'devextreme/data/custom_store';
 
 interface OrderItem {
   OrderNumber: number;
@@ -23,7 +24,7 @@ export class AppService {
     return `${item.Employee}: ${item.StoreState} - ${item.StoreCity} <${item.OrderNumber}>`;
   }
 
-  makeAsyncDataSource(): any {
+  makeAsyncDataSource(): CustomStore {
     return AspNetData.createStore({
       key: 'OrderNumber',
       loadUrl: this.API_URL,

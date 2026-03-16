@@ -1,7 +1,7 @@
 import {
   Component, inject,
 } from '@angular/core';
-import DataSource from 'devextreme/data/data_source';
+import { DataSource } from 'devextreme-angular/common/data';
 import type { DxSelectBoxTypes } from 'devextreme-angular/ui/select-box';
 import { AppService } from './app.service';
 
