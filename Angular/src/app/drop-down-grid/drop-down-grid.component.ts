@@ -7,7 +7,7 @@ import {
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
 import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
-import DataSource from 'devextreme/data/data_source';
+import { DataSource } from 'devextreme-angular/common/data';
 
 @Component({
   selector: 'app-drop-down-grid',
