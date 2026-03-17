@@ -22,6 +22,7 @@ export function makeAsyncDataSource(): AspNetData.CustomStore {
     loadUrl: API_URL,
   });
 }
+
 export const searchExprOptions = [
   { name: '\'Employee\'', value: 'Employee' },
   { name: '[\'OrderNumber\', \'Employee\']', value: ['OrderNumber', 'Employee'] },

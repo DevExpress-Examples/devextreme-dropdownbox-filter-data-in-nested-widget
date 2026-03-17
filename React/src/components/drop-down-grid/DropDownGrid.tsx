@@ -5,14 +5,14 @@ import DropDownBox, { type DropDownBoxTypes, type DropDownBoxRef } from 'devextr
 import DataGrid, {
   Column, Format, Selection, Paging, Scrolling, type DataGridTypes, type DataGridRef,
 } from 'devextreme-react/data-grid';
-import DataSource from 'devextreme/data/data_source';
+import { DataSource } from 'devextreme-react/common/data';
 import { isSearchIncomplete } from './utils.ts';
 import type { OrderItem } from '../../appService';
 
 interface DropDownGridProps {
   selectedRowKey: number;
   dataSource: DataSource;
-  dropDownBoxDataSource: any;
+  dropDownBoxDataSource: DataSource;
   searchTimeout: number;
   // eslint-disable-next-line no-unused-vars
   displayExpr: (item: OrderItem | null) => string;
@@ -53,7 +53,7 @@ export function DropDownGrid({
   }, []);
 
   const onFocusedRowChanged = useCallback((e: DataGridTypes.FocusedRowChangedEvent) => {
-    setFocusedRowKey(e.row?.key || -1);
+    setFocusedRowKey(e.row?.key || null);
     if (focusAfterLoading.current) {
       setTimeout(() => {
         dropDownBoxRef.current?.instance().focus();
@@ -88,11 +88,10 @@ export function DropDownGrid({
         }).catch(() => {});
       }
     }, searchTimeout);
-  }, [dataSource, gridBoxOpened, isSearchIncomplete, searchTimeout]);
+  }, [dataSource, gridBoxOpened, searchTimeout]);
 
   const onOpened = useCallback((e: DropDownBoxTypes.OpenedEvent) => {
     if (!gridFirstLoadCompleted.current) {
-      gridFirstLoadCompleted.current = true;
       gridFirstLoadCompleted.current = true;
     }
     const _gridFirstLoadCompleted = gridFirstLoadCompleted.current;

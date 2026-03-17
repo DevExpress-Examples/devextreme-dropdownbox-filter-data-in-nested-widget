@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import './App.css';
 import 'devextreme/dist/css/dx.light.css';
-import DataSource from 'devextreme/data/data_source';
+import { DataSource } from 'devextreme-react/common/data';
 import SelectBox, { type SelectBoxTypes } from 'devextreme-react/select-box';
 import NumberBox, { type NumberBoxTypes } from 'devextreme-react/number-box';
 import { DropDownGrid } from './components/drop-down-grid/DropDownGrid';
@@ -25,7 +25,7 @@ function App(): JSX.Element {
 
   const onTimeoutChanged = useCallback((e: NumberBoxTypes.ValueChangedEvent) => {
     setSearchTimeout(e.value);
-  }, [searchTimeout]);
+  }, []);
 
   return (
     <div className="dx-viewport demo-container">
