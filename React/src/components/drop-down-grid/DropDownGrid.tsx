@@ -20,20 +20,6 @@ interface DropDownGridProps {
 
 const dropDownOptions = { height: 400 };
 
-export function handleGridContentReady(args: DataGridTypes.ContentReadyEvent): void {
-  const inst = args.component;
-  inst.focus();
-  inst.off('contentReady', handleGridContentReady);
-}
-
-export function handleGridOptionChanged(args: DataGridTypes.OptionChangedEvent): void {
-  const inst = args.component;
-  if (args.name === 'focusedRowKey' || args.name === 'focusedColumnIndex') {
-    inst.off('optionChanged', handleGridOptionChanged);
-    inst.focus();
-  }
-}
-
 export function DropDownGrid({
   selectedRowKey,
   dataSource,
@@ -59,6 +45,7 @@ export function DropDownGrid({
   const onDropDownValueChanged = useCallback((args: DropDownBoxTypes.ValueChangedEvent) => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
     setSelectedRowKeys(args.value ? [args.value] : []);
+    setDropDownValue(args.value ? args.value : null);
     setFocusedRowKey(args.value ? args.value : null);
     if (args.value) {
       setGridBoxOpened(false);
@@ -76,6 +63,7 @@ export function DropDownGrid({
   }, []);
 
   const onSelectionChanged = useCallback((args: DataGridTypes.SelectionChangedEvent) => {
+    if (!gridFirstLoadCompleted.current) return;
     if (!resetSelection.current) {
       const keys = args.selectedRowKeys;
       setDropDownValue(keys.length ? keys[0] : null);
@@ -83,7 +71,7 @@ export function DropDownGrid({
       dropDownBoxRef.current?.instance().focus();
     }
     resetSelection.current = false;
-  }, [selectedRowKeys]);
+  }, []);
 
   const onInput = useCallback((e: DropDownBoxTypes.InputEvent) => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -103,6 +91,10 @@ export function DropDownGrid({
   }, [dataSource, gridBoxOpened, isSearchIncomplete, searchTimeout]);
 
   const onOpened = useCallback((e: DropDownBoxTypes.OpenedEvent) => {
+    if (!gridFirstLoadCompleted.current) {
+      gridFirstLoadCompleted.current = true;
+      gridFirstLoadCompleted.current = true;
+    }
     const _gridFirstLoadCompleted = gridFirstLoadCompleted.current;
     const dropDownBox = e.component;
     function handleOptionChanged(args: DataGridTypes.OptionChangedEvent): void {
@@ -133,6 +125,7 @@ export function DropDownGrid({
     if (shouldClearSelection && selectedRowKeys?.length) {
       resetSelection.current = true;
       setSelectedRowKeys([]);
+      setDropDownValue(null);
     }
   }, [selectedRowKeys]);
 
@@ -155,24 +148,18 @@ export function DropDownGrid({
     if (resetValue) {
       const firstKey = dataGridRef.current?.instance().getKeyByRowIndex(0);
       setSelectedRowKeys([firstKey]);
+      setDropDownValue(firstKey);
       setFocusedRowKey(firstKey);
     }
   }, [dataSource]);
 
   const onOptionChanged = useCallback((args: DropDownBoxTypes.OptionChangedEvent) => {
     if (args.name === 'text' && !args.value && gridFirstLoadCompleted.current) {
-      setTimeout(() => {
-        dataGridRef.current?.instance().pageIndex(0).then(() => {
-          setFocusedRowKey(0);
-          args.component.option('focusedRowIndex', 0);
-        }).catch(() => {});
-      }, 500);
-    }
-  }, []);
-
-  const dataGridContentReady = useCallback(() => {
-    if (!gridFirstLoadCompleted.current) {
-      gridFirstLoadCompleted.current = true;
+      dataGridRef.current?.instance().pageIndex(0).then(() => {
+        setTimeout(() => {
+          dataGridRef.current?.instance().option('focusedRowIndex', 0);
+        }, 2000);
+      }).catch(() => {});
     }
   }, []);
 
@@ -184,10 +171,9 @@ export function DropDownGrid({
   }, [focusedRowKey]);
 
   const onDropDownBoxKeyDown = useCallback((e: DropDownBoxTypes.KeyDownEvent) => {
-    const dropDownBox = e.component;
     if (e.event?.key !== 'ArrowDown') return;
     if (!gridBoxOpened) {
-      dropDownBox.open();
+      setGridBoxOpened(true);
     } else if (dataGridRef.current?.instance()) {
       dataGridRef.current.instance().focus();
     }
@@ -196,6 +182,7 @@ export function DropDownGrid({
   const onOpenedChange = useCallback((isOpened: boolean) => {
     setGridBoxOpened(isOpened);
   }, []);
+
   return (
     <DropDownBox
       ref={dropDownBoxRef}
@@ -231,7 +218,6 @@ export function DropDownGrid({
         remoteOperations={true}
         columnAutoWidth={true}
         onKeyDown={dataGridKeyDown}
-        onContentReady={dataGridContentReady}
         onFocusedRowChanged={onFocusedRowChanged}
         onSelectionChanged={onSelectionChanged}
       >
