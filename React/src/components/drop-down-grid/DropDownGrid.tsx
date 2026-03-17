@@ -155,11 +155,11 @@ export function DropDownGrid({
 
   const onOptionChanged = useCallback((args: DropDownBoxTypes.OptionChangedEvent) => {
     if (args.name === 'text' && !args.value && gridFirstLoadCompleted.current) {
-      dataGridRef.current?.instance().pageIndex(0).then(() => {
-        setTimeout(() => {
+      setTimeout(() => {
+        dataGridRef.current?.instance().pageIndex(0).then(() => {
           dataGridRef.current?.instance().option('focusedRowIndex', 0);
-        }, 2000);
-      }).catch(() => {});
+        }).catch(() => {});
+      }, 1500);
     }
   }, []);
 

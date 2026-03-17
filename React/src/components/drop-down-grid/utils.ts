@@ -1,10 +1,12 @@
 import DropDownBox from 'devextreme/ui/drop_down_box';
 
 export function isSearchIncomplete(dropDownBox: DropDownBox): boolean {
-  const displayValue = dropDownBox.option('displayValue') as string[] | undefined;
+  let displayValue = dropDownBox.option('displayValue');
   const text = dropDownBox.option('text');
   const textValue = text?.length ? text : undefined;
-  const displayFirst = displayValue?.length ? displayValue[0] : undefined;
-  return textValue !== displayFirst;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error (private API)
+  displayValue = displayValue?.length && displayValue[0];
+  return textValue !== displayValue;
 }
 
