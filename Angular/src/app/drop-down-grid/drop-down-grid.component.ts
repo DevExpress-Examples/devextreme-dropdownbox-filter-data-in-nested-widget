@@ -2,7 +2,7 @@ import {
   Component,
   Input,
   ViewChild,
-  ChangeDetectorRef,
+  ChangeDetectorRef, OnInit,
 } from '@angular/core';
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
 import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
@@ -15,7 +15,7 @@ import DropDownBox from 'devextreme/ui/drop_down_box';
   templateUrl: './drop-down-grid.html',
   standalone: false,
 })
-export class DropDownGridComponent {
+export class DropDownGridComponent implements OnInit {
   @ViewChild('dropDownBox', { static: false }) dropDownBox!: DxDropDownBoxComponent;
 
   @ViewChild(DxDataGridComponent) dataGrid!: DxDataGridComponent;
@@ -56,6 +56,12 @@ export class DropDownGridComponent {
     this.focusedRowKey = this.selectedRowKey;
   }
 
+  focusInput(): void {
+    setTimeout(() => {
+      this.dropDownBox.instance.focus();
+    });
+  }
+
   onDropDownValueChanged(args: DxDropDownBoxTypes.ValueChangedEvent): void {
     if (this.searchTimer) clearTimeout(this.searchTimer);
     this.selectedRowKeys = args.value ? [args.value] : [];
@@ -65,21 +71,12 @@ export class DropDownGridComponent {
     }
   }
 
-  onFocusedRowChanged(args: DxDataGridTypes.FocusedRowChangedEvent): void {
-    if (this.focusAfterLoading) {
-      setTimeout(() => {
-        this.dropDownBox.instance.focus();
-      });
-      this.focusAfterLoading = false;
-    }
-  }
-
   onSelectionChanged(args: DxDataGridTypes.SelectionChangedEvent): void {
     if (!this.resetSelection) {
       const keys = args.selectedRowKeys;
       this.dropDownValue = keys.length ? keys[0] : null;
       this.cdr.detectChanges();
-      this.dropDownBox.instance.focus();
+      this.focusInput();
     }
     this.resetSelection = false;
   }
@@ -101,12 +98,14 @@ export class DropDownGridComponent {
       const text = e.component.option('text');
       this.dataSource.searchValue(text ?? null);
       if (this.isSearchIncomplete(e.component)) {
-        this.focusAfterLoading = true;
-        this.dataSource.load().then((items) => {
-          if (items.length > 0) {
-            this.focusedRowKey = items[0].OrderNumber;
-          }
-        }).catch(() => {});
+        setTimeout(() => {
+          this.dataSource.load().then((items) => {
+            if (items.length > 0) {
+              this.focusedRowKey = items[0].OrderNumber;
+            }
+            this.focusInput();
+          }).catch((error) => {});
+        }, 500);
       }
     }, this.searchTimeout);
   }
