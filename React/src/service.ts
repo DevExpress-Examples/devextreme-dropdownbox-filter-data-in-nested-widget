@@ -1,4 +1,13 @@
 import * as AspNetData from 'devextreme-aspnet-data-nojquery';
+import DropDownBox from 'devextreme/ui/drop_down_box';
+
+export function isSearchIncomplete(dropDownBox: DropDownBox): boolean {
+  let displayValue: any = dropDownBox.option('displayValue');
+  const text = dropDownBox.option('text');
+  const textValue = text?.length ? text : undefined;
+  displayValue = displayValue?.length && displayValue[0];
+  return textValue !== displayValue;
+}
 
 export interface OrderItem {
   OrderNumber: number;

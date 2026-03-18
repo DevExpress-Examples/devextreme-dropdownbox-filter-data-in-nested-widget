@@ -1,11 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
-import './App.css';
 import 'devextreme/dist/css/dx.light.css';
+import './App.css';
 import { DataSource } from 'devextreme-react/common/data';
 import SelectBox, { type SelectBoxTypes } from 'devextreme-react/select-box';
 import NumberBox, { type NumberBoxTypes } from 'devextreme-react/number-box';
 import { DropDownGrid } from './components/drop-down-grid/DropDownGrid';
-import { formatDisplayExpr, makeAsyncDataSource, searchExprOptions } from './appService';
+import { formatDisplayExpr, makeAsyncDataSource, searchExprOptions } from './service.ts';
 
 function App(): JSX.Element {
   const [searchTimeout, setSearchTimeout] = useState(1000);

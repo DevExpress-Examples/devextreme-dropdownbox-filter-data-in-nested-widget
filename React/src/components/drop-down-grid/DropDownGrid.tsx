@@ -1,13 +1,13 @@
 import {
-  useState, useCallback, useRef,
+  useState, useCallback, useRef, useReducer,
 } from 'react';
 import DropDownBox, { type DropDownBoxTypes, type DropDownBoxRef } from 'devextreme-react/drop-down-box';
 import DataGrid, {
   Column, Format, Selection, Paging, Scrolling, type DataGridTypes, type DataGridRef,
 } from 'devextreme-react/data-grid';
 import { DataSource } from 'devextreme-react/common/data';
-import { isSearchIncomplete } from './utils.ts';
-import type { OrderItem } from '../../appService';
+import { isSearchIncomplete, type OrderItem } from '../../service';
+import { selectionReducer } from './selectionReducer';
 
 interface DropDownGridProps {
   selectedRowKey: number;
@@ -27,9 +27,12 @@ export function DropDownGrid({
   searchTimeout,
   displayExpr,
 }: DropDownGridProps): JSX.Element {
-  const [dropDownValue, setDropDownValue] = useState<number | null>(selectedRowKey);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([selectedRowKey]);
-  const [focusedRowKey, setFocusedRowKey] = useState<number | null>(selectedRowKey);
+  const [selection, dispatch] = useReducer(selectionReducer, {
+    dropDownValue: selectedRowKey,
+    selectedRowKeys: [selectedRowKey],
+    focusedRowKey: selectedRowKey,
+  });
+
   const [gridBoxOpened, setGridBoxOpened] = useState(false);
 
   const gridFirstLoadCompleted = useRef(false);
@@ -40,20 +43,16 @@ export function DropDownGrid({
   const dropDownBoxRef = useRef<DropDownBoxRef>(null);
   const dataGridRef = useRef<DataGridRef>(null);
 
-  // --- DropDownBox handlers ---
-
   const onDropDownValueChanged = useCallback((args: DropDownBoxTypes.ValueChangedEvent) => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
-    setSelectedRowKeys(args.value ? [args.value] : []);
-    setDropDownValue(args.value ? args.value : null);
-    setFocusedRowKey(args.value ? args.value : null);
+    dispatch({ type: 'SELECT_VALUE', value: args.value ?? null });
     if (args.value) {
       setGridBoxOpened(false);
     }
   }, []);
 
   const onFocusedRowChanged = useCallback((e: DataGridTypes.FocusedRowChangedEvent) => {
-    setFocusedRowKey(e.row?.key || null);
+    dispatch({ type: 'SET_FOCUSED_KEY', key: e.row?.key || null });
     if (focusAfterLoading.current) {
       setTimeout(() => {
         dropDownBoxRef.current?.instance().focus();
@@ -65,9 +64,7 @@ export function DropDownGrid({
   const onSelectionChanged = useCallback((args: DataGridTypes.SelectionChangedEvent) => {
     if (!gridFirstLoadCompleted.current) return;
     if (!resetSelection.current) {
-      const keys = args.selectedRowKeys;
-      setDropDownValue(keys.length ? keys[0] : null);
-      setSelectedRowKeys(keys);
+      dispatch({ type: 'SELECT_ROW', keys: args.selectedRowKeys });
       dropDownBoxRef.current?.instance().focus();
     }
     resetSelection.current = false;
@@ -83,7 +80,7 @@ export function DropDownGrid({
         focusAfterLoading.current = true;
         dataSource.load().then((items) => {
           if (items.length > 0) {
-            setFocusedRowKey(items[0].OrderNumber);
+            dispatch({ type: 'SET_FOCUSED_KEY', key: items[0].OrderNumber });
           }
         }).catch(() => {});
       }
@@ -121,12 +118,11 @@ export function DropDownGrid({
     const isTextEqualToDisplayValue = dropDownBox.option('text') === displayValue[0];
     const shouldClearSelection = (dropDownBox.option('value') && !dropDownBox.option('text')) || !isTextEqualToDisplayValue;
 
-    if (shouldClearSelection && selectedRowKeys?.length) {
+    if (shouldClearSelection && selection.selectedRowKeys.length) {
       resetSelection.current = true;
-      setSelectedRowKeys([]);
-      setDropDownValue(null);
+      dispatch({ type: 'RESET' });
     }
-  }, [selectedRowKeys]);
+  }, [selection.selectedRowKeys]);
 
   const onClosed = useCallback((e: DropDownBoxTypes.ClosedEvent) => {
     const dropDownBox = e.component;
@@ -146,9 +142,7 @@ export function DropDownGrid({
 
     if (resetValue) {
       const firstKey = dataGridRef.current?.instance().getKeyByRowIndex(0);
-      setSelectedRowKeys([firstKey]);
-      setDropDownValue(firstKey);
-      setFocusedRowKey(firstKey);
+      dispatch({ type: 'SELECT_VALUE', value: firstKey });
     }
   }, [dataSource]);
 
@@ -163,11 +157,10 @@ export function DropDownGrid({
   }, []);
 
   const dataGridKeyDown = useCallback((e: DataGridTypes.KeyDownEvent) => {
-    if (e.event?.key === 'Enter' && focusedRowKey) {
-      setSelectedRowKeys([focusedRowKey]);
-      setDropDownValue(focusedRowKey);
+    if (e.event?.key === 'Enter' && selection.focusedRowKey) {
+      dispatch({ type: 'SELECT_VALUE', value: selection.focusedRowKey });
     }
-  }, [focusedRowKey]);
+  }, [selection.focusedRowKey]);
 
   const onDropDownBoxKeyDown = useCallback((e: DropDownBoxTypes.KeyDownEvent) => {
     if (e.event?.key !== 'ArrowDown') return;
@@ -187,7 +180,7 @@ export function DropDownGrid({
       ref={dropDownBoxRef}
       width="40vw"
       dataSource={dropDownBoxDataSource}
-      value={dropDownValue}
+      value={selection.dropDownValue}
       valueExpr="OrderNumber"
       opened={gridBoxOpened}
       onOpenedChange={onOpenedChange}
@@ -211,8 +204,8 @@ export function DropDownGrid({
         height="100%"
         width="100%"
         focusedRowEnabled={true}
-        focusedRowKey={focusedRowKey}
-        selectedRowKeys={selectedRowKeys}
+        focusedRowKey={selection.focusedRowKey}
+        selectedRowKeys={selection.selectedRowKeys}
         autoNavigateToFocusedRow={false}
         remoteOperations={true}
         columnAutoWidth={true}
