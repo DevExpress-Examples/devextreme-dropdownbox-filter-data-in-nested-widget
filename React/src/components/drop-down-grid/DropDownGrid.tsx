@@ -71,10 +71,10 @@ export function DropDownGrid({
         dataSource.load().then((items) => {
           if (items.length > 0) {
             dispatch({ type: 'SET_FOCUSED_KEY', key: items[0].OrderNumber });
-            setTimeout(() => {
-              dropDownBoxRef.current?.instance().focus();
-            });
           }
+          setTimeout(() => {
+            dropDownBoxRef.current?.instance().focus();
+          });
         }).catch(() => {});
       }
     }, searchTimeout);
