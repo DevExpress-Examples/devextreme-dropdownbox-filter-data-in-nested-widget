@@ -1,4 +1,39 @@
-.main {
-  margin: 50px;
-  width: 90vw;
+.dx-viewport {
+  font-family: -apple-system, BlinkMacSystemFont, "avenir next", avenir,
+  "segoe ui", "helvetica neue", "adwaita sans", cantarell, ubuntu, roboto,
+  noto, helvetica, arial, sans-serif;
+}
+
+.options {
+  height: 180px;
+  width: 25vw;
+  padding: 20px;
+  background-color: rgb(191 191 191 / 15%);
+  position: absolute;
+  right: 20px;
+  top: 40px;
+  bottom: 0;
+}
+
+.caption {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.option {
+  margin-top: 10px;
+}
+
+.demo-container {
+  margin: 40px 20px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.row p {
+  margin: 0;
 }
