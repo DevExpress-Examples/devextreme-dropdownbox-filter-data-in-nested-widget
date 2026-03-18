@@ -27,7 +27,7 @@ export function selectionReducer(state: SelectionState, action: SelectionAction)
     case 'SET_FOCUSED_KEY':
       return { ...state, focusedRowKey: action.key };
     case 'RESET':
-      return { ...state, dropDownValue: null, selectedRowKeys: [] };
+      return { ...state, selectedRowKeys: [] };
     default:
       return state;
   }

@@ -34,10 +34,9 @@ export function DropDownGrid({
   });
 
   const [gridBoxOpened, setGridBoxOpened] = useState(false);
+  const [focusAfterLoading, setFocusAfterLoading] = useState(false);
 
   const gridFirstLoadCompleted = useRef(false);
-  const focusAfterLoading = useRef(false);
-  const resetSelection = useRef(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const dropDownBoxRef = useRef<DropDownBoxRef>(null);
@@ -53,21 +52,12 @@ export function DropDownGrid({
 
   const onFocusedRowChanged = useCallback((e: DataGridTypes.FocusedRowChangedEvent) => {
     dispatch({ type: 'SET_FOCUSED_KEY', key: e.row?.key || null });
-    if (focusAfterLoading.current) {
-      setTimeout(() => {
-        dropDownBoxRef.current?.instance().focus();
-      });
-      focusAfterLoading.current = false;
-    }
   }, []);
 
   const onSelectionChanged = useCallback((args: DataGridTypes.SelectionChangedEvent) => {
-    if (!gridFirstLoadCompleted.current) return;
-    if (!resetSelection.current) {
-      dispatch({ type: 'SELECT_ROW', keys: args.selectedRowKeys });
-      dropDownBoxRef.current?.instance().focus();
-    }
-    resetSelection.current = false;
+    if (!gridFirstLoadCompleted.current || !args.selectedRowKeys.length) return;
+    dispatch({ type: 'SELECT_ROW', keys: args.selectedRowKeys });
+    dropDownBoxRef.current?.instance().focus();
   }, []);
 
   const onInput = useCallback((e: DropDownBoxTypes.InputEvent) => {
@@ -77,15 +67,18 @@ export function DropDownGrid({
       const text = e.component.option('text');
       dataSource.searchValue(text ?? null);
       if (isSearchIncomplete(e.component)) {
-        focusAfterLoading.current = true;
+        setFocusAfterLoading(true);
         dataSource.load().then((items) => {
           if (items.length > 0) {
             dispatch({ type: 'SET_FOCUSED_KEY', key: items[0].OrderNumber });
+            setTimeout(() => {
+              dropDownBoxRef.current?.instance().focus();
+            });
           }
         }).catch(() => {});
       }
     }, searchTimeout);
-  }, [dataSource, gridBoxOpened, searchTimeout]);
+  }, [dataSource, gridBoxOpened, searchTimeout, focusAfterLoading]);
 
   const onOpened = useCallback((e: DropDownBoxTypes.OpenedEvent) => {
     if (!gridFirstLoadCompleted.current) {
@@ -98,7 +91,6 @@ export function DropDownGrid({
       const triggerCondition = _gridFirstLoadCompleted
         ? args.name === 'opened'
         : args.name === 'focusedRowKey' || args.name === 'focusedRowIndex';
-
       if (triggerCondition) {
         grid.off('optionChanged', handleOptionChanged);
         requestAnimationFrame(() => {
@@ -118,11 +110,10 @@ export function DropDownGrid({
     const isTextEqualToDisplayValue = dropDownBox.option('text') === displayValue[0];
     const shouldClearSelection = (dropDownBox.option('value') && !dropDownBox.option('text')) || !isTextEqualToDisplayValue;
 
-    if (shouldClearSelection && selection.selectedRowKeys.length) {
-      resetSelection.current = true;
+    if (shouldClearSelection && selection.selectedRowKeys?.length) {
       dispatch({ type: 'RESET' });
     }
-  }, [selection.selectedRowKeys]);
+  }, []);
 
   const onClosed = useCallback((e: DropDownBoxTypes.ClosedEvent) => {
     const dropDownBox = e.component;
