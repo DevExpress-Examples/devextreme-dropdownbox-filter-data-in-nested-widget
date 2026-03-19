@@ -148,10 +148,11 @@ export function DropDownGrid({
   }, []);
 
   const dataGridKeyDown = useCallback((e: DataGridTypes.KeyDownEvent) => {
-    if (e.event?.key === 'Enter' && selection.focusedRowKey) {
-      dispatch({ type: 'SELECT_VALUE', value: selection.focusedRowKey });
+    console.log(selection)
+    if (e.event?.key === 'Enter') {
+      dispatch({ type: 'SELECT_FOCUSED_ROW' });
     }
-  }, [selection.focusedRowKey]);
+  }, []);
 
   const onDropDownBoxKeyDown = useCallback((e: DropDownBoxTypes.KeyDownEvent) => {
     if (e.event?.key !== 'ArrowDown') return;

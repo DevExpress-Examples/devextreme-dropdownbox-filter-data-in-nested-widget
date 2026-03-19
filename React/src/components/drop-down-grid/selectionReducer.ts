@@ -7,6 +7,7 @@ interface SelectionState {
 type SelectionAction =
     | { type: 'SELECT_VALUE'; value: number | null }
     | { type: 'SELECT_ROW'; keys: number[] }
+    | { type: 'SELECT_FOCUSED_ROW' }
     | { type: 'SET_FOCUSED_KEY'; key: number | null }
     | { type: 'RESET' };
 
@@ -17,6 +18,13 @@ export function selectionReducer(state: SelectionState, action: SelectionAction)
         dropDownValue: action.value,
         selectedRowKeys: action.value ? [action.value] : [],
         focusedRowKey: action.value,
+      };
+    case 'SELECT_FOCUSED_ROW':
+      if (!state.focusedRowKey) return state;
+      return {
+        dropDownValue: state.focusedRowKey,
+        selectedRowKeys: [state.focusedRowKey],
+        focusedRowKey: state.focusedRowKey,
       };
     case 'SELECT_ROW':
       return {
