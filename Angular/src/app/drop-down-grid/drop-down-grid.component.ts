@@ -98,14 +98,17 @@ export class DropDownGridComponent implements OnInit {
       const text = e.component.option('text');
       this.dataSource.searchValue(text ?? null);
       if (this.isSearchIncomplete(e.component)) {
-        setTimeout(() => {
-          this.dataSource.load().then((items) => {
-            if (items.length > 0) {
-              this.focusedRowKey = items[0].OrderNumber;
-            }
-            this.focusInput();
-          }).catch((error) => {});
-        }, 500);
+        const onChanged = (): void => {
+          const items = this.dataSource.items();
+          if (items.length > 0) {
+            this.focusedRowKey = items[0].OrderNumber;
+          }
+          this.focusInput();
+          this.dataSource.off('changed', onChanged);
+        };
+
+        this.dataSource.on('changed', onChanged);
+        this.dataSource.load().catch((err: Error) => {});
       }
     }, this.searchTimeout);
   }
