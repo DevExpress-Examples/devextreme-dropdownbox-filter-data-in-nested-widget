@@ -101,14 +101,6 @@ $(() => {
             grid.selectRows([grid.option('focusedRowKey')], false);
           }
         },
-        onFocusedRowChanged: (event) => {
-          if (event.component.option('focusAfterLoading')) {
-            setTimeout(() => {
-              dropDownBox.focus();
-            });
-            dataGridInstance.option('focusAfterLoading', false);
-          }
-        },
         onSelectionChanged: (args) => {
           if (!args.component.option('resetSelection')) {
             const keys = args.selectedRowKeys;
