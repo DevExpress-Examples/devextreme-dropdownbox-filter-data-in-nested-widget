@@ -34,7 +34,6 @@ export function DropDownGrid({
   });
 
   const [gridBoxOpened, setGridBoxOpened] = useState(false);
-  const [focusAfterLoading, setFocusAfterLoading] = useState(false);
 
   const gridFirstLoadCompleted = useRef(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,6 +59,15 @@ export function DropDownGrid({
     dropDownBoxRef.current?.instance().focus();
   }, []);
 
+  const onChanged = useCallback(() => {
+    const items = dataSource.items();
+    if (items.length > 0) {
+      dispatch({ type: 'SET_FOCUSED_KEY', key: items[0].OrderNumber });
+    }
+    dropDownBoxRef.current?.instance().focus();
+    dataSource.off('changed', onChanged);
+  }, []);
+
   const onInput = useCallback((e: DropDownBoxTypes.InputEvent) => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
     searchTimer.current = setTimeout(() => {
@@ -67,18 +75,11 @@ export function DropDownGrid({
       const text = e.component.option('text');
       dataSource.searchValue(text ?? null);
       if (isSearchIncomplete(e.component)) {
-        setFocusAfterLoading(true);
-        dataSource.load().then((items) => {
-          if (items.length > 0) {
-            dispatch({ type: 'SET_FOCUSED_KEY', key: items[0].OrderNumber });
-          }
-          setTimeout(() => {
-            dropDownBoxRef.current?.instance().focus();
-          });
-        }).catch(() => {});
+        dataSource.on('changed', onChanged);
+        dataSource.load().catch(() => {});
       }
     }, searchTimeout);
-  }, [dataSource, gridBoxOpened, searchTimeout, focusAfterLoading]);
+  }, [dataSource, gridBoxOpened, searchTimeout]);
 
   const onOpened = useCallback((e: DropDownBoxTypes.OpenedEvent) => {
     if (!gridFirstLoadCompleted.current) {
