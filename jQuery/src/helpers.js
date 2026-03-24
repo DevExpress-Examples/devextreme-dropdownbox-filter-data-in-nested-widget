@@ -24,11 +24,17 @@ export function performSearch({ dropDownBox, dataSource, dataGridInstance }) {
 
   if (isSearchIncomplete(dropDownBox)) {
     dataGridInstance.option('focusAfterLoading', true);
-    dataSource.load().then((items) => {
+    const onChanged = () => {
+      const items = dataSource.items();
       if (items.length > 0) {
         dataGridInstance.option('focusedRowKey', items[0].OrderNumber);
       }
-    });
+      dropDownBox.focus();
+      dataSource.off('changed', onChanged);
+    };
+
+    dataSource.on('changed', onChanged);
+    dataSource.load();
   }
 }
 
