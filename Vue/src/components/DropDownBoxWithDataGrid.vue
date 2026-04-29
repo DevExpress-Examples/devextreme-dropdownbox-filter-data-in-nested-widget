@@ -80,8 +80,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { DataSource } from 'devextreme-vue/common/data';
-import DxDropDownBox, { type DxDropDownBoxTypes } from 'devextreme-vue/drop-down-box';
-import { DxDataGrid, DxColumn, DxSelection, DxFormat, DxPaging, DxScrolling, type DxDataGridTypes } from 'devextreme-vue/data-grid';
+import DxDropDownBox, {
+  type DxDropDownBoxTypes,
+} from 'devextreme-vue/drop-down-box';
+import {
+  DxDataGrid,
+  DxColumn,
+  DxSelection,
+  DxFormat,
+  DxPaging,
+  DxScrolling,
+  type DxDataGridTypes,
+} from 'devextreme-vue/data-grid';
 import { isSearchIncomplete, type OrderItem } from '../service';
 
 const props = defineProps<{
@@ -89,6 +99,7 @@ const props = defineProps<{
   dataSource: DataSource;
   dropDownBoxDataSource: DataSource;
   searchTimeout: number;
+  // eslint-disable-next-line no-unused-vars
   displayExpr: (item: OrderItem | null) => string;
 }>();
 
@@ -104,7 +115,9 @@ const dataGridRef = ref<DxDataGrid | null>(null);
 
 const dropDownOptions = { height: 400 };
 
-function onDropDownValueChanged(args: DxDropDownBoxTypes.ValueChangedEvent): void {
+function onDropDownValueChanged(
+  args: DxDropDownBoxTypes.ValueChangedEvent
+): void {
   if (searchTimer.value) clearTimeout(searchTimer.value);
   dropDownValue.value = args.value ?? null;
   selectedRowKeys.value = args.value ? [args.value] : [];
@@ -173,8 +186,11 @@ function onOpened(e: DxDropDownBoxTypes.OpenedEvent): void {
   }
 
   const displayValue = dropDownBox.option('displayValue') as string[];
-  const isTextEqualToDisplayValue = dropDownBox.option('text') === displayValue[0];
-  const shouldClearSelection = (dropDownBox.option('value') && !dropDownBox.option('text')) || !isTextEqualToDisplayValue;
+  const isTextEqualToDisplayValue =
+    dropDownBox.option('text') === displayValue[0];
+  const shouldClearSelection =
+    (dropDownBox.option('value') && !dropDownBox.option('text')) ||
+    !isTextEqualToDisplayValue;
 
   if (shouldClearSelection && selectedRowKeys.value?.length) {
     selectedRowKeys.value = [];
@@ -191,7 +207,10 @@ function onClosed(e: DxDropDownBoxTypes.ClosedEvent): void {
   if (!hasLoadedItems) {
     dropDownBox.reset('');
     props.dataSource.searchValue('');
-    props.dataSource.load().then(() => {}).catch(() => {});
+    props.dataSource
+      .load()
+      .then(() => {})
+      .catch(() => {});
     return;
   }
 
@@ -206,9 +225,12 @@ function onClosed(e: DxDropDownBoxTypes.ClosedEvent): void {
 function onOptionChanged(args: DxDropDownBoxTypes.OptionChangedEvent): void {
   if (args.name === 'text' && !args.value && gridFirstLoadCompleted.value) {
     setTimeout(() => {
-      dataGridRef.value?.instance?.pageIndex(0).then(() => {
-        dataGridRef.value?.instance?.option('focusedRowIndex', 0);
-      }).catch(() => {});
+      dataGridRef.value?.instance
+        ?.pageIndex(0)
+        .then(() => {
+          dataGridRef.value?.instance?.option('focusedRowIndex', 0);
+        })
+        .catch(() => {});
     }, 500);
   }
 }
