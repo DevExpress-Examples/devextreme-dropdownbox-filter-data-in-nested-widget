@@ -89,7 +89,6 @@ const props = defineProps<{
   dataSource: DataSource;
   dropDownBoxDataSource: DataSource;
   searchTimeout: number;
-  // eslint-disable-next-line no-unused-vars
   displayExpr: (item: OrderItem | null) => string;
 }>();
 
@@ -100,8 +99,8 @@ const gridBoxOpened = ref(false);
 const gridFirstLoadCompleted = ref(false);
 const searchTimer = ref<ReturnType<typeof setTimeout> | null>(null);
 
-const dropDownBoxRef = ref<InstanceType<typeof DxDropDownBox> | null>(null);
-const dataGridRef = ref<InstanceType<typeof DxDataGrid> | null>(null);
+const dropDownBoxRef = ref<DxDropDownBox | null>(null);
+const dataGridRef = ref<DxDataGrid | null>(null);
 
 const dropDownOptions = { height: 400 };
 
