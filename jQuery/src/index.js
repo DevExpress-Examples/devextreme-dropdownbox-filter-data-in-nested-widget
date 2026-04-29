@@ -140,6 +140,7 @@ $(() => {
     valueExpr: 'value',
     value: 'Employee',
     onValueChanged(e) {
+      console.log(e.value)
       dataSource.searchExpr(e.value);
     },
   });

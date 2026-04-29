@@ -64,6 +64,7 @@ export function handleDropDownOpened({ e, dataGridInstance }) {
   const gridFirstLoadCompleted = dropDownBox.option('gridFirstLoadCompleted');
 
   const handleOptionChanged = (args) => {
+    console.log(args)
     const grid = args.component;
     const triggerCondition = gridFirstLoadCompleted
       ? args.name === 'opened'
@@ -78,6 +79,7 @@ export function handleDropDownOpened({ e, dataGridInstance }) {
           grid.option('opened', false);
         });
       } else {
+        console.log('fh')
         grid.focus();
       }
     }
