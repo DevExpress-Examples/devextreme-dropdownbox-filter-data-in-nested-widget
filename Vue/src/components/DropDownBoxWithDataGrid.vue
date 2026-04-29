@@ -185,12 +185,10 @@ function onOpened(e: DxDropDownBoxTypes.OpenedEvent): void {
     dataGridRef.value?.instance?.option('opened', true);
   }
 
+  const { text, value } = dropDownBox.option();
   const displayValue = dropDownBox.option('displayValue') as string[];
-  const isTextEqualToDisplayValue =
-    dropDownBox.option('text') === displayValue[0];
-  const shouldClearSelection =
-    (dropDownBox.option('value') && !dropDownBox.option('text')) ||
-    !isTextEqualToDisplayValue;
+  const isTextEqualToDisplayValue = text === displayValue[0];
+  const shouldClearSelection = (value && !text) || !isTextEqualToDisplayValue;
 
   if (shouldClearSelection && selectedRowKeys.value?.length) {
     selectedRowKeys.value = [];
