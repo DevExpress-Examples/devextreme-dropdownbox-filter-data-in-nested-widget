@@ -1,80 +1,97 @@
 @using ASP_NET_Core.Models
 
-<h2>Home</h2>
-
-<script src="~/js/DropDownBoxSearch.js"></script>
-
-@(Html.DevExtreme().DropDownBox()
-    .Value(10270)
-    .ValueExpr("OrderID")
-    .ValueChangeEvent("")
-    .AcceptCustomValue(true)
-    .DropDownOptions(op => op.Height(300))
-    .OpenOnFieldClick(false)
-    .DisplayExpr(new JS("gridBox_displayExpr"))
-    .DataSource(d => d.Mvc()
-        .Controller("SampleData")
-        .LoadAction("Get")
-        .Key("OrderID")
+<div class="row">
+    <p>DropDownBox with search and embedded DataGrid</p>
+    @(Html.DevExtreme().DropDownBox()
+        .ID("gridBox")
+        .Value(10250)
+        .Width("40vw")
+        .ValueExpr("OrderID")
+        .DisplayExpr(new JS("gridBoxDisplayExpr"))
+        .ValueChangeEvent("")
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ShowClearButton(true)
+        .Placeholder("Select a value...")
+        .DataSource(d => d.Mvc().Controller("SampleData").LoadAction("Get").Key("OrderID"))
+        .DropDownOptions(op => op.Height(400))
+        .OnInput("onInput")
+        .OnOpened("onOpened")
+        .OnClosed("onClosed")
+        .OnOptionChanged("onOptionChanged")
+        .OnKeyDown("onKeyDown")
+        .OnValueChanged("gridBoxValueChanged")
+        .ContentTemplate(new TemplateName("EmbeddedDataGridSingle"))
     )
-    .Placeholder("Enter a value...")
-    .ShowClearButton(true)
-    .OnClosed("onClosed")
-    .OnInput("onInput")
-    .OnOpened("onOpened")
-    .OnKeyDown("onKeyDown")
-    .OnValueChanged("gridBox_valueChanged")
-    .ContentTemplate(new TemplateName("EmbeddedDataGridSingle"))
-)
+</div>
+
+<div class="options">
+    <div class="caption">Search Options</div>
+    <div class="option">
+        <div>Search Expression</div>
+        @(Html.DevExtreme().SelectBox()
+            .ID("searchExprOption")
+            .DataSource(new[] {
+                new { Name = "'CustomerName'", Value = "CustomerName" },
+                new { Name = "['OrderID', 'CustomerName']", Value = "OrderID,CustomerName" },
+                new { Name = "['ShipCity', 'CustomerName']", Value = "ShipCity,CustomerName" },
+                new { Name = "['OrderID', 'ShipCity', 'ShipCountry', 'CustomerName']", Value = "OrderID,ShipCity,ShipCountry,CustomerName" }
+            })
+            .DisplayExpr("Name")
+            .ValueExpr("Value")
+            .Value("CustomerName")
+            .OnValueChanged("onSearchExprChanged")
+        )
+    </div>
+    <div class="option">
+        <div>Search Timeout</div>
+        @(Html.DevExtreme().NumberBox()
+            .ID("searchTimeoutOption")
+            .Min(0)
+            .Max(10000)
+            .Value(1000)
+            .ShowSpinButtons(true)
+            .Step(100)
+            .OnValueChanged("onSearchTimeoutChanged")
+        )
+    </div>
+</div>
 
 @using (Html.DevExtreme().NamedTemplate("EmbeddedDataGridSingle"))
 {
     @(Html.DevExtreme().DataGrid<SampleOrder>()
-            .ID("embedded-datagrid")
-            .DataSource(d => d.Mvc()
-                .Controller("SampleData")
-                .LoadAction("Get")
-                .Key("OrderID")
-            )
-            .DataSourceOptions(op =>
-            {
-                op.SearchExpr(new[] { "ShipCity", "ShipCountry", "CustomerName" });
-                op.Filter(new JS(
-                    @"isSearchIncomplete(component)
-                    && component.option('text')
-                    && component.option('text').length > 0
-                        ? [
-                            ['CustomerName', 'contains', component.option('text')], 'or',
-                            ['ShipCountry', 'contains', component.option('text')], 'or',
-                            ['ShipCity', 'contains', component.option('text')]
-                          ]
-                        : null"
-                ));
-            })
-            .ShowBorders(true)
-            .HoverStateEnabled(true)
-            .Width("100%")
-            .Height("100%")
-            .ColumnWidth(120)
-            .Columns(columns =>
-            {
-                columns.AddFor(m => m.OrderID);
-                columns.AddFor(m => m.OrderDate);
-                columns.AddFor(m => m.CustomerName);
-                columns.AddFor(m => m.ShipCountry);
-                columns.AddFor(m => m.ShipCity);
-            })
-            .Paging(p => p.PageSize(10))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .FocusedRowEnabled(true)
-            .FocusedRowIndex(0)
-            .RemoteOperations(true)
-            .AutoNavigateToFocusedRow(false)
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .SelectedRowKeys(new JS(@"[component.option('value')]"))
-            .OnSelectionChanged("function(e){ dataGridSelectionChanged(e, component); }")
-            .OnKeyDown("dataGridKeyDown")
-            .OnContentReady("function(e) { dataGridContentReady(e, component); }")
-            .OnInitialized("dataGridInitialized")
-        )
+        .ID("embedded-datagrid")
+        .DataSource(d => d.Mvc().Controller("SampleData").LoadAction("Get").Key("OrderID"))
+        .DataSourceOptions(op =>
+        {
+            op.SearchExpr(new[] { "CustomerName" });
+        })
+        .Paging(p => p.PageSize(10))
+        .FocusedRowEnabled(true)
+        .FocusedRowKey(new JS("component.option('value')"))
+        .FocusedRowIndex(0)
+        .RemoteOperations(true)
+        .AutoNavigateToFocusedRow(false)
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS("[component.option('value') ]"))
+        .Height("100%")
+        .Width("100%")
+        .HoverStateEnabled(true)
+        .ColumnAutoWidth(true)
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.OrderID).Caption("ID");
+            columns.AddFor(m => m.OrderDate).Format("shortDate");
+            columns.AddFor(m => m.CustomerName);
+            columns.AddFor(m => m.ShipCountry);
+            columns.AddFor(m => m.ShipCity);
+        })
+        .OnSelectionChanged("function(e){ dataGridSelectionChanged(e, component); }")
+        .OnKeyDown("dataGridKeyDown")
+        .OnContentReady("function(e){ dataGridContentReady(e, component); }")
+        .OnInitialized("dataGridInitialized")
+    )
 }
+
+<script src="~/js/drop-down-box.js"></script>
