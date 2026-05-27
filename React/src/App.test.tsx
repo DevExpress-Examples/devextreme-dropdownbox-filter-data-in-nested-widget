@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import App from './App.tsx';
 
 test('DropDownBox with search and embedded DataGrid', () => {
   render(<App />);
