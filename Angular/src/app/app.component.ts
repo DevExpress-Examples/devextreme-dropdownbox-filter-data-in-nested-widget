@@ -4,12 +4,18 @@ import {
 import { DataSource } from 'devextreme-angular/common/data';
 import type { DxSelectBoxTypes } from 'devextreme-angular/ui/select-box';
 import { AppService } from './app.service';
+import { DxDropDownBoxModule } from 'devextreme-angular/ui/drop-down-box';
+import { DxDataGridModule } from 'devextreme-angular/ui/data-grid';
+import { DxSelectBoxModule } from 'devextreme-angular/ui/select-box';
+import { DxNumberBoxModule } from 'devextreme-angular/ui/number-box';
+import { DxTemplateModule } from 'devextreme-angular/core';
+import { DropDownGridComponent } from './drop-down-grid/drop-down-grid.component';
 
 @Component({
   selector: 'app-root',
+  imports: [DxDropDownBoxModule, DxDataGridModule, DxSelectBoxModule, DxNumberBoxModule, DxTemplateModule, DropDownGridComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: false,
 })
 export class AppComponent {
   private readonly appService = inject(AppService);

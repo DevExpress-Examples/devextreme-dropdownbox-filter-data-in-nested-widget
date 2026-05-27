@@ -9,11 +9,16 @@ import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import type { DxDropDownBoxTypes } from 'devextreme-angular/ui/drop-down-box';
 import { DataSource } from 'devextreme-angular/common/data';
 import DropDownBox from 'devextreme/ui/drop_down_box';
+import { DxDropDownBoxModule } from 'devextreme-angular/ui/drop-down-box';
+import { DxDataGridModule } from 'devextreme-angular/ui/data-grid';
+import { DxSelectBoxModule } from 'devextreme-angular/ui/select-box';
+import { DxNumberBoxModule } from 'devextreme-angular/ui/number-box';
+import { DxTemplateModule } from 'devextreme-angular/core';
 
 @Component({
   selector: 'app-drop-down-grid',
+  imports: [DxDropDownBoxModule, DxDataGridModule, DxSelectBoxModule, DxNumberBoxModule, DxTemplateModule],
   templateUrl: './drop-down-grid.html',
-  standalone: false,
 })
 export class DropDownGridComponent implements OnInit {
   @ViewChild('dropDownBox', { static: false }) dropDownBox!: DxDropDownBoxComponent;
