@@ -85,11 +85,11 @@ export function DropDownGrid({
     if (!gridFirstLoadCompleted.current) {
       gridFirstLoadCompleted.current = true;
     }
-    const _gridFirstLoadCompleted = gridFirstLoadCompleted.current;
+    const isFirstLoadComplete = gridFirstLoadCompleted.current;
     const dropDownBox = e.component;
     function handleOptionChanged(args: DataGridTypes.OptionChangedEvent): void {
       const grid = args.component;
-      const triggerCondition = _gridFirstLoadCompleted
+      const triggerCondition = isFirstLoadComplete
         ? args.name === 'opened'
         : args.name === 'focusedRowKey' || args.name === 'focusedRowIndex';
       if (triggerCondition) {

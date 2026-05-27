@@ -113,7 +113,7 @@ export class DropDownGridComponent implements OnInit {
         };
 
         this.dataSource.on('changed', onChanged);
-        this.dataSource.load().catch((err: Error) => {});
+        this.dataSource.load().catch((_err: Error) => {});
       }
     }, this.searchTimeout);
   }
@@ -164,7 +164,7 @@ export class DropDownGridComponent implements OnInit {
       this.dataSource.searchValue('');
       this.dataSource.load()
         .then(() => {})
-        .catch((error) => {});
+        .catch((_error) => {});
       return;
     }
 
@@ -185,7 +185,7 @@ export class DropDownGridComponent implements OnInit {
     }
   }
 
-  dataGridContentReady(e: DxDataGridTypes.ContentReadyEvent): void {
+  dataGridContentReady(_e: DxDataGridTypes.ContentReadyEvent): void {
     if (!this.gridFirstLoadCompleted) {
       this.gridFirstLoadCompleted = true;
     }

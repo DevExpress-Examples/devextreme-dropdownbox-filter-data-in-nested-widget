@@ -4,8 +4,8 @@ import './App.css';
 import { DataSource } from 'devextreme-react/common/data';
 import SelectBox, { type SelectBoxTypes } from 'devextreme-react/select-box';
 import NumberBox, { type NumberBoxTypes } from 'devextreme-react/number-box';
-import { DropDownGrid } from './components/drop-down-grid/DropDownGrid';
-import { formatDisplayExpr, makeAsyncDataSource, searchExprOptions } from './service.ts';
+import { DropDownGrid } from './components/drop-down-grid/DropDownGrid.tsx';
+import { formatDisplayExpr, makeAsyncDataSource, searchExprOptions } from './service';
 
 function App(): JSX.Element {
   const [searchTimeout, setSearchTimeout] = useState(1000);
