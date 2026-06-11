@@ -14,7 +14,6 @@ interface DropDownGridProps {
   dataSource: DataSource;
   dropDownBoxDataSource: DataSource;
   searchTimeout: number;
-  // eslint-disable-next-line no-unused-vars
   displayExpr: (item: OrderItem | null) => string;
 }
 
