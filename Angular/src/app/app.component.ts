@@ -1,5 +1,6 @@
 import {
   Component, inject,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { DataSource } from 'devextreme-angular/common/data';
 import type { DxSelectBoxTypes } from 'devextreme-angular/ui/select-box';
@@ -15,6 +16,7 @@ import { DropDownGridComponent } from './drop-down-grid/drop-down-grid.component
   selector: 'app-root',
   imports: [DxDropDownBoxModule, DxDataGridModule, DxSelectBoxModule, DxNumberBoxModule, DxTemplateModule, DropDownGridComponent],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {

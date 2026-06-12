@@ -3,6 +3,7 @@ import {
   Input,
   ViewChild,
   ChangeDetectorRef, OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { DxDropDownBoxComponent, DxDataGridComponent } from 'devextreme-angular';
 import type { DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
@@ -18,6 +19,7 @@ import { DxTemplateModule } from 'devextreme-angular/core';
 @Component({
   selector: 'app-drop-down-grid',
   imports: [DxDropDownBoxModule, DxDataGridModule, DxSelectBoxModule, DxNumberBoxModule, DxTemplateModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './drop-down-grid.html',
 })
 export class DropDownGridComponent implements OnInit {
