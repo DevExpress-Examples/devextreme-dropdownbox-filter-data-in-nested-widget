@@ -41,5 +41,10 @@
     "vitest": "^2.0.0",
     "vue-tsc": "^2.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "devextreme-aspnet-data-nojquery": {
+      "devextreme": "$devextreme"
+    }
+  }
 }

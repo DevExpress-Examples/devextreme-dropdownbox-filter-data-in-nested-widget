@@ -28,5 +28,10 @@
     "devextreme-aspnet-data": "5.1.0",
     "jquery": "^3.7.1"
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "devextreme-aspnet-data": {
+      "devextreme": "$devextreme"
+    }
+  }
 }

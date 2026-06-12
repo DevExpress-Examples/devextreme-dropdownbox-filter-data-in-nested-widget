@@ -46,5 +46,10 @@
     "typescript-eslint": "^8.18.2",
     "vite": "^6.3.5",
     "vitest": "^1.5.0"
+  },
+  "overrides": {
+    "devextreme-aspnet-data-nojquery": {
+      "devextreme": "$devextreme"
+    }
   }
 }
