@@ -5,13 +5,57 @@
 [![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
 
-# DropDownBox for DevExtreme - How to filter data of a nested DataGrid
+# DevExtreme DropDownBox - Search in an Embedded DataGrid
 
-This example demonstrates how to filter the data of a DropDownBox embedded in a DataGrid component.
+This example implements a search that filters data in a [DataGrid](https://js.devexpress.com/Documentation/Guide/UI_Components/DataGrid/Getting_Started_with_DataGrid/) embedded in a [DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/) component.
 
 ![DropDownBox filtering](./images/dropdownbox-filtering.gif)
 
-Use [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput), [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) and [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event handlers to filter and display data.
+## Implementation Details
+
+The example uses three [DropDownBox](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/) event handlers to coordinate search behavior between the input field and the embedded DataGrid.
+
+The [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput) handler fires when the user types in the DropDownBox. It opens the dropdown if it is not already open, and filters the DataGrid by updating `dataSource.searchValue()` with the typed text:
+
+```javascript
+onInput(e) {
+    clearTimeout(searchTimerId);
+    searchTimerId = setTimeout(() => {
+        const dropDownBox = e.component;
+        if (!dropDownBox.option('opened')) dropDownBox.open();
+
+        const text = dropDownBox.option('text') || '';
+        dataSource.searchValue(text);
+        dataSource.load();
+    }, searchTimeout);
+},
+```
+
+The [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) handler fires when the dropdown opens. It registers a one-time listener on the DataGrid to move focus to it once the grid is ready for keyboard navigation:
+
+```javascript
+onOpened(e) {
+    dataGridInstance.on('optionChanged', function handler(args) {
+        dataGridInstance.off('optionChanged', handler);
+        dataGridInstance.focus();
+    });
+},
+```
+
+The [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) handler fires when the dropdown closes. It resets the search state: if the typed text does not match a valid selection, the handler either selects the first available row or clears the DropDownBox value:
+
+```javascript
+onClosed(e) {
+    const dropDownBox = e.component;
+    const text = dropDownBox.option('text');
+    const displayValue = dropDownBox.option('displayValue')[0];
+
+    if (text !== displayValue) {
+        dataSource.searchValue('');
+        dataSource.load();
+    }
+},
+```
 
 ## Files to Review
 
@@ -31,12 +75,11 @@ Use [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Com
 ## Documentation
 
 - [Getting Started with DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/)
-
 - [DropDownBox - Synchronize with the Embedded Element](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Synchronize_with_the_Embedded_Element/)
+- [DropDownBox API - onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput)
+- [DropDownBox API - onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened)
+- [DropDownBox API - onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed)
 
-## More Examples
-
-- [DropDownBox - Single Selection](https://js.devexpress.com/Demos/WidgetsGallery/Demo/DropDownBox/SingleSelection)
 <!-- feedback -->
 ## Does This Example Address Your Development Requirements/Objectives?
 
