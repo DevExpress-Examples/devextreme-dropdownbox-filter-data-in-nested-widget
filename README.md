@@ -9,53 +9,17 @@
 
 This example implements a search that filters data in a [DataGrid](https://js.devexpress.com/Documentation/Guide/UI_Components/DataGrid/Getting_Started_with_DataGrid/) embedded in a [DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/) component.
 
-![DropDownBox filtering](./images/dropdownbox-filtering.gif)
+![DropDownBox filtering](./images/dropdownbox-filtering.png)
 
 ## Implementation Details
 
 The example uses three [DropDownBox](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/) event handlers to coordinate search behavior between the input field and the embedded DataGrid.
 
-The [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput) handler fires when the user types in the DropDownBox. It opens the dropdown if it is not already open, and filters the DataGrid by updating `dataSource.searchValue()` with the typed text:
+The [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput) handler fires when the user types in the DropDownBox. It opens the dropdown if it is not already open, and filters the DataGrid by updating `dataSource.searchValue()` with the typed text.
 
-```javascript
-onInput(e) {
-    clearTimeout(searchTimerId);
-    searchTimerId = setTimeout(() => {
-        const dropDownBox = e.component;
-        if (!dropDownBox.option('opened')) dropDownBox.open();
+The [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) handler fires when the dropdown opens. It registers a one-time listener on the DataGrid to move focus to it once the grid is ready for keyboard navigation.
 
-        const text = dropDownBox.option('text') || '';
-        dataSource.searchValue(text);
-        dataSource.load();
-    }, searchTimeout);
-},
-```
-
-The [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) handler fires when the dropdown opens. It registers a one-time listener on the DataGrid to move focus to it once the grid is ready for keyboard navigation:
-
-```javascript
-onOpened(e) {
-    dataGridInstance.on('optionChanged', function handler(args) {
-        dataGridInstance.off('optionChanged', handler);
-        dataGridInstance.focus();
-    });
-},
-```
-
-The [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) handler fires when the dropdown closes. It resets the search state: if the typed text does not match a valid selection, the handler either selects the first available row or clears the DropDownBox value:
-
-```javascript
-onClosed(e) {
-    const dropDownBox = e.component;
-    const text = dropDownBox.option('text');
-    const displayValue = dropDownBox.option('displayValue')[0];
-
-    if (text !== displayValue) {
-        dataSource.searchValue('');
-        dataSource.load();
-    }
-},
-```
+The [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) handler fires when the dropdown closes. It resets the search state: if the typed text does not match a valid selection, the handler either selects the first available row or clears the DropDownBox value.
 
 ## Files to Review
 
