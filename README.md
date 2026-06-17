@@ -15,11 +15,11 @@ This example implements a search that filters data in a [DataGrid](https://js.de
 
 The example uses three [DropDownBox](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/) event handlers to coordinate search behavior between the input field and the embedded DataGrid.
 
-The [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput) handler fires when the user types in the DropDownBox. It opens the dropdown if it is not already open, and filters the DataGrid by updating `dataSource.searchValue()` with the typed text.
+1. The [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput) handler fires when the user types in the DropDownBox. It opens the dropdown if it is not already open, and filters the DataGrid by updating `dataSource.searchValue()` with the typed text.
 
-The [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) handler fires when the dropdown opens. It registers a one-time listener on the DataGrid to move focus to it once the grid is ready for keyboard navigation.
+2. The [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) handler fires when the dropdown opens. It registers a one-time listener on the DataGrid to move focus to it once the grid is ready for keyboard navigation.
 
-The [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) handler fires when the dropdown closes. It resets the search state: if the typed text does not match a valid selection, the handler either selects the first available row or clears the DropDownBox value.
+3. The [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) handler fires when the dropdown closes. It resets the search state: if the typed text does not match a valid selection, the handler either selects the first available row or clears the DropDownBox value.
 
 ## Files to Review
 
