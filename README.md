@@ -9,6 +9,8 @@
 
 This repository contains code referenced in the following DevExtreme help topic: [DropDownBox - How To Search by Field Values (DataGrid)](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Search_in_Embedded_Components/#Search_by_Field_Values_DataGrid).
 
+![DropDownBox filtering](./images/dropdownbox-filtering.png)
+
 ## Files to Review
 
 - **Angular**
