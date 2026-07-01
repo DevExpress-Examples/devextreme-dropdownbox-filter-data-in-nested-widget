@@ -7,19 +7,7 @@
 
 # DevExtreme DropDownBox - Search Within an Embedded DataGrid
 
-This example implements a search that filters data in a [DataGrid](https://js.devexpress.com/Documentation/Guide/UI_Components/DataGrid/Getting_Started_with_DataGrid/) placed into a [DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/) component.
-
-![DropDownBox filtering](./images/dropdownbox-filtering.png)
-
-## Implementation Details
-
-The example handles the following [DropDownBox](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDropDownBox/) events to synchronize search behavior between the input field and the embedded DataGrid:
-
-1. The [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput) event fires when the user types in the DropDownBox. The event handler opens the dropdown (if it is not already open) and passes the entered text to the Grid's `dataSource.searchValue()` method.
-
-2. The [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) event fires when the dropdown opens. The event handler registers a one-time listener on the DataGrid to move focus to the component once the grid is ready for keyboard navigation.
-
-3. The [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event fires when the dropdown closes. The event handler resets the search state: if the entered text does not match a valid selection, the handler either selects the first available row or clears the DropDownBox value.
+This repository contains code referenced in the following DevExtreme help topic: [DropDownBox - How To Search by Field Values (DataGrid)](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Search_in_Embedded_Components/#Search_by_Field_Values_DataGrid).
 
 ## Files to Review
 
@@ -40,9 +28,11 @@ The example handles the following [DropDownBox](https://js.devexpress.com/Docume
 
 - [Getting Started with DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/)
 - [DropDownBox - Synchronize with the Embedded Element](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Synchronize_with_the_Embedded_Element/)
-- [DropDownBox API - onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput)
-- [DropDownBox API - onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened)
-- [DropDownBox API - onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed)
+- [DropDownBox - Search in Embedded Components](https://js.devexpress.com/jQuery/Documentation/Guide/UI_Components/DropDownBox/Search_in_Embedded_Components/)
+
+## More Examples
+
+[DevExtreme DropDownBox - Search Within an Embedded TreeList](https://github.com/DevExpress-Examples/devextreme-dropdownbox-search-in-treelist)
 
 <!-- feedback -->
 ## Does This Example Address Your Development Requirements/Objectives?
