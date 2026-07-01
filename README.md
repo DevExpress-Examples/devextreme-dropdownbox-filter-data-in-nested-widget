@@ -5,13 +5,9 @@
 [![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
 
-# DropDownBox for DevExtreme - How to filter data of a nested DataGrid
+# DevExtreme DropDownBox - Search Within an Embedded DataGrid
 
-This example demonstrates how to filter the data of a DropDownBox embedded in a DataGrid component.
-
-![DropDownBox filtering](./images/dropdownbox-filtering.gif)
-
-Use [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onInput), [onOpened](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onOpened) and [onClosed](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Components/dxDropDownBox/Configuration/#onClosed) event handlers to filter and display data.
+This repository contains code referenced in the following DevExtreme help topic: [DropDownBox - How To Search by Field Values (DataGrid)](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Search_in_Embedded_Components/#Search_by_Field_Values_DataGrid).
 
 ## Files to Review
 
@@ -31,12 +27,13 @@ Use [onInput](https://js.devexpress.com/jQuery/Documentation/ApiReference/UI_Com
 ## Documentation
 
 - [Getting Started with DropDownBox](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Getting_Started_with_DropDownBox/)
-
 - [DropDownBox - Synchronize with the Embedded Element](https://js.devexpress.com/Documentation/Guide/UI_Components/DropDownBox/Synchronize_with_the_Embedded_Element/)
+- [DropDownBox - Search in Embedded Components](https://js.devexpress.com/jQuery/Documentation/Guide/UI_Components/DropDownBox/Search_in_Embedded_Components/)
 
 ## More Examples
 
-- [DropDownBox - Single Selection](https://js.devexpress.com/Demos/WidgetsGallery/Demo/DropDownBox/SingleSelection)
+[DevExtreme DropDownBox - Search Within an Embedded TreeList](https://github.com/DevExpress-Examples/devextreme-dropdownbox-search-in-treelist)
+
 <!-- feedback -->
 ## Does This Example Address Your Development Requirements/Objectives?
 
